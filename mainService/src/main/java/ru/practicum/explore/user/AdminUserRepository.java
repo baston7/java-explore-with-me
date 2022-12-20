@@ -9,6 +9,6 @@ import java.util.Arrays;
 import java.util.List;
 
 @Repository
-public interface AdminUserRepository extends JpaRepository<User, Long> {
-    List<User> findUsersById(Iterable<Integer>ids, PageRequest pageRequest);
+public interface AdminUserRepository extends JpaRepository<User, Integer> {
+    List<User> findUsersByIdIn(Iterable<Integer>ids, PageRequest pageRequest);
 }

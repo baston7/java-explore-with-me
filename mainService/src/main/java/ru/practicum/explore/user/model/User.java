@@ -22,7 +22,7 @@ import javax.persistence.Table;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long id;
+    int id;
     String name;
     @Column(unique = true)
     String email;
