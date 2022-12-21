@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS events
     category_id       INT                         NOT NULL REFERENCES categories (id) ON DELETE CASCADE,
     description       VARCHAR(7000)               NOT NULL,
     eventDate         TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    location          point,
+    location          json,
     paid              BOOLEAN                     NOT NULL,
     participantLimit  INT                         NOT NULL,
     requestModeration BOOLEAN                     NOT NULL,

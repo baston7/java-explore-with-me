@@ -3,6 +3,7 @@ package ru.practicum.explore.user;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import ru.practicum.explore.exception.UserNotFoundException;
 import ru.practicum.explore.user.model.User;
 
 import java.util.List;
@@ -25,5 +26,8 @@ public class AdminUserService {
     }
     public void deleteUser(Integer userId) {
         adminUserRepository.deleteById(userId);
+    }
+    public User getUserById(int id) {
+        return adminUserRepository.findById(id).orElseThrow(()-> new UserNotFoundException("Пользователь не найден"));
     }
 }
