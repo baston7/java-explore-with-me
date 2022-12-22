@@ -2,6 +2,7 @@ package ru.practicum.explore.user;
 
 import lombok.experimental.UtilityClass;
 import ru.practicum.explore.user.dto.UserDto;
+import ru.practicum.explore.user.dto.UserShortDto;
 import ru.practicum.explore.user.model.User;
 
 @UtilityClass
@@ -11,6 +12,12 @@ public class UserMapper {
                 user.getId(),
                 user.getName(),
                 user.getEmail()
+        );
+    }
+    public static UserShortDto toUserShortDto(User user) {
+        return new UserShortDto(
+                user.getId(),
+                user.getName()
         );
     }
 
