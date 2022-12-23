@@ -1,24 +1,23 @@
 package ru.practicum.explore.event;
 
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.explore.user.model.User;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.Locale;
 
 @Data
 @AllArgsConstructor
@@ -35,20 +34,25 @@ public class Event {
     private Category category;
 
     private String description;
+    @Column(name = "published_on")
     private LocalDateTime publishedOn;
+    @Column(name = "event_date")
     private LocalDateTime eventDate;
+    @Column(name = "created_on")
     private LocalDateTime createdOn;
+    @Enumerated(EnumType.STRING)
     private State state;
     private int views;
     @ManyToOne
     @JoinColumn(name = "initiator_id")
     private User initiator;
-    @Column(name = "location")
+    @Embedded
     private Location location;
 
     private boolean paid;
-    private int participantLimit;
-
+    @Column(name = "participant_limit")
+    private Integer participantLimit;
+    @Column(name = "request_moderation")
     private boolean requestModeration;
 
     private String title;

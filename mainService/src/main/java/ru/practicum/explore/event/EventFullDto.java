@@ -17,14 +17,14 @@ public class EventFullDto {
     private String annotation;
     private CategoryDto category;
     private int confirmedRequests;
-    private LocalDateTime createdOn;
+    private String createdOn;
     private String description;
-    private LocalDateTime eventDate;
+    private String eventDate;
     private UserShortDto initiator;
     private Location location;
     private boolean paid;
     private int participantLimit;
-    private LocalDateTime publishedOn;
+    private String publishedOn;
     private boolean requestModeration;
     private State state;
     private String title;

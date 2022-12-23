@@ -5,29 +5,21 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class NewEventDto {
-    @NotBlank
+@NotNull
+public class UpdateEventRequestDto {
+    private Integer eventId;
     private String annotation;
-    @NotNull
-    private Integer category;
-    @NotBlank
+    private int category;
     private String description;
-    @NotBlank
     private String eventDate;
-    @NotNull
-    private Location location;
-    @NotNull
     private boolean paid;
-    private Integer participantLimit;
-    @NotNull
-    private boolean requestModeration;
-    @NotBlank
+    private int participantLimit;
     private String title;
 }

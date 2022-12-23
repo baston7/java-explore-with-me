@@ -1,17 +1,16 @@
 package ru.practicum.explore.event;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-import java.io.Serializable;
+import javax.persistence.Embeddable;
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Location implements Serializable {
+@Embeddable
+public class Location {
     private float lat;
     private float lon;
 }
