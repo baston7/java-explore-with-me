@@ -32,7 +32,8 @@ public class Event {
     @OneToOne
     @JoinColumn(name = "category_id")
     private Category category;
-
+    @Column(name = "confirmed_requests")
+    private int confirmedRequests;
     private String description;
     @Column(name = "published_on")
     private LocalDateTime publishedOn;

@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import ru.practicum.explore.user.model.User;
 
 import javax.persistence.Entity;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -30,5 +31,6 @@ public class Request {
     @ManyToOne
     @JoinColumn(name = "requester_id")
     private User requester;
+    @Enumerated
     private State status;
 }

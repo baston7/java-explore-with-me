@@ -40,7 +40,10 @@ public class PrivateEventController {
 
     @PatchMapping
     public EventFullDto updateEvent(@PathVariable Integer userId, @RequestBody UpdateEventRequestDto updateEventRequestDto) {
-        Category category = categoryService.getCategoryById(updateEventRequestDto.getCategory());
+        Category category=null;
+        if(updateEventRequestDto.getCategory()!=0){
+             category = categoryService.getCategoryById(updateEventRequestDto.getCategory());
+        }
         User initiator = adminUserService.getUserById(userId);
         Event event = EventMapper.toEventFromUpdateEventDto(updateEventRequestDto, category, initiator);
         return EventMapper.toEventFullDto(privateEventService.updateEvent(event));

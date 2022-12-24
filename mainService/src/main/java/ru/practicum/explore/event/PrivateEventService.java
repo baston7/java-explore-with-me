@@ -45,6 +45,9 @@ public class PrivateEventService {
         }
         return userEvents;
     }
+    public Event getEventById(int eventId) {
+        return eventRepository.findById(eventId).orElseThrow(() -> new RuntimeException("ne naiden event"));
+    }
 
     public Event getEventByEventIdAndInitiatorId(Integer eventId, Integer initiatorId) {
         return eventRepository.findEventByIdAndInitiatorId(eventId, initiatorId)

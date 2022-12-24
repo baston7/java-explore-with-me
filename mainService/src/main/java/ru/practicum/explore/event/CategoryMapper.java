@@ -1,8 +1,6 @@
 package ru.practicum.explore.event;
 
 import lombok.experimental.UtilityClass;
-import ru.practicum.explore.user.dto.UserDto;
-import ru.practicum.explore.user.model.User;
 
 @UtilityClass
 public class CategoryMapper {

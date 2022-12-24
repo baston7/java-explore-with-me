@@ -18,6 +18,7 @@ public class EventMapper {
         eventFullDto.setId(event.getId());
         eventFullDto.setAnnotation(event.getAnnotation());
         eventFullDto.setCategory(CategoryMapper.toCategoryDto(event.getCategory()));
+        eventFullDto.setConfirmedRequests(event.getConfirmedRequests());
         eventFullDto.setCreatedOn(event.getCreatedOn().format(formatter));
         eventFullDto.setDescription(event.getDescription());
         eventFullDto.setEventDate(event.getEventDate().format(formatter));
@@ -25,7 +26,7 @@ public class EventMapper {
         eventFullDto.setLocation(event.getLocation());
         eventFullDto.setPaid(event.isPaid());
         eventFullDto.setParticipantLimit(event.getParticipantLimit());
-        eventFullDto.setPublishedOn(event.getPublishedOn()!=null? event.getPublishedOn().format(formatter) : null );
+        eventFullDto.setPublishedOn(event.getPublishedOn() != null ? event.getPublishedOn().format(formatter) : null);
         eventFullDto.setRequestModeration(event.isRequestModeration());
         eventFullDto.setState(event.getState());
         eventFullDto.setTitle(event.getTitle());
@@ -43,13 +44,15 @@ public class EventMapper {
         event.setCreatedOn(LocalDateTime.now());
         event.setLocation(newEventDto.getLocation());
         event.setPaid(newEventDto.isPaid());
-        event.setParticipantLimit(newEventDto.getParticipantLimit());
+        event.setParticipantLimit(newEventDto.getParticipantLimit() != null ? newEventDto.getParticipantLimit() : 0);
         event.setRequestModeration(newEventDto.isRequestModeration());
         event.setTitle(newEventDto.getTitle());
+        event.setConfirmedRequests(0);
         event.setState(State.PENDING);
         event.setViews(0);
         return event;
     }
+
     public static Event toEventFromUpdateEventDto(UpdateEventRequestDto updateEventRequestDto, Category category, User initiator) {
         Event event = new Event();
         event.setAnnotation(updateEventRequestDto.getAnnotation());
@@ -63,5 +66,17 @@ public class EventMapper {
         event.setTitle(updateEventRequestDto.getTitle());
         return event;
     }
+    public static Event toEventFromAdminUpdateEventRequestDto(AdminUpdateEventRequestDto adminUpdateEventRequestDto, Category category) {
+        Event event = new Event();
+        event.setAnnotation(adminUpdateEventRequestDto.getAnnotation());
+        event.setCategory(category);
+        event.setDescription(adminUpdateEventRequestDto.getDescription());
+        event.setEventDate(LocalDateTime.parse(adminUpdateEventRequestDto.getEventDate(), formatter));
+        event.setLocation(adminUpdateEventRequestDto.getLocation());
+        event.setPaid(adminUpdateEventRequestDto.isPaid());
+        event.setParticipantLimit(adminUpdateEventRequestDto.getParticipantLimit());
+        event.setRequestModeration(adminUpdateEventRequestDto.isRequestModeration());
+        event.setTitle(adminUpdateEventRequestDto.getTitle());
+        return event;
+    }
 }
-

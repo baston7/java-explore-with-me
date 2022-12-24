@@ -12,22 +12,22 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class AdminUserService {
-    private final AdminUserRepository adminUserRepository;
+    private final UserRepository userRepository;
 
     public List<User> getUsersByIds(List<Integer>ids, int page,int size) {
-        return adminUserRepository.findUsersByIdIn(ids, PageRequest.of(page, size));
+        return userRepository.findUsersByIdIn(ids, PageRequest.of(page, size));
     }
     public List<User> getUsers( int page,int size) {
-        return adminUserRepository.findAll(PageRequest.of(page, size)).stream()
+        return userRepository.findAll(PageRequest.of(page, size)).stream()
                 .collect(Collectors.toList());
     }
     public User saveUser(User user) {
-        return adminUserRepository.save(user);
+        return userRepository.save(user);
     }
     public void deleteUser(Integer userId) {
-        adminUserRepository.deleteById(userId);
+        userRepository.deleteById(userId);
     }
     public User getUserById(int id) {
-        return adminUserRepository.findById(id).orElseThrow(()-> new UserNotFoundException("Пользователь не найден"));
+        return userRepository.findById(id).orElseThrow(()-> new UserNotFoundException("Пользователь не найден"));
     }
 }

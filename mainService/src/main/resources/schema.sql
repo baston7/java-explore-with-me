@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS events
     annotation         VARCHAR(2000)               NOT NULL,
     category_id        INT                         NOT NULL REFERENCES categories (id) ON DELETE CASCADE,
     description        VARCHAR(7000)               NOT NULL,
+    confirmed_requests INT,
     event_date         TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     published_on       TIMESTAMP WITHOUT TIME ZONE,
     created_on         TIMESTAMP WITHOUT TIME ZONE NOT NULL,
