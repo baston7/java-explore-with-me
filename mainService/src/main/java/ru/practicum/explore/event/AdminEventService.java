@@ -79,7 +79,8 @@ public class AdminEventService {
         } else if (users == null && states != null && categories == null && rangeStart == null && rangeEnd == null) {
             events = eventRepository.findAllByStateIn(valueStates, PageRequest.of(page, size));
         } else if (users == null && states != null && categories != null && rangeStart == null && rangeEnd == null) {
-            events = eventRepository.findAllByStateInAndCategoryIdIn(valueStates, categories, PageRequest.of(page, size));
+            events = eventRepository.findAllByStateInAndCategoryIdIn(valueStates, categories, PageRequest.of(page,
+                    size));
         } else if (users == null && states != null && categories != null && rangeStart != null && rangeEnd == null) {
             events = eventRepository.findAllByStateInAndCategoryIdInAndEventDateIsAfter(valueStates, categories, start,
                     PageRequest.of(page, size));
@@ -93,20 +94,25 @@ public class AdminEventService {
             events = eventRepository.findAllByCategoryIdInAndEventDateIsAfter(categories, start, PageRequest.of(page,
                     size));
         } else if (users == null && states == null && categories != null && rangeStart != null && rangeEnd != null) {
-            events = eventRepository.findAllByCategoryIdInAndEventDateIsAfterAndEventDateIsBefore(categories, start, end,
+            events = eventRepository.findAllByCategoryIdInAndEventDateIsAfterAndEventDateIsBefore(categories, start,
+                    end,
                     PageRequest.of(page, size));
         } else if (users == null && states == null && categories == null && rangeStart != null && rangeEnd == null) {
             events = eventRepository.findAllByEventDateIsAfter(start, PageRequest.of(page, size));
         } else if (users == null && states == null && categories == null && rangeStart != null && rangeEnd != null) {
-            events = eventRepository.findAllByEventDateIsAfterAndEventDateIsBefore(start, end, PageRequest.of(page, size));
+            events = eventRepository.findAllByEventDateIsAfterAndEventDateIsBefore(start, end, PageRequest.of(page,
+                    size));
         } else if (users == null && states == null && categories == null && rangeStart == null && rangeEnd != null) {
             events = eventRepository.findAllByEventDateIsBefore(end, PageRequest.of(page, size));
         } else if (users != null && states == null && categories != null && rangeStart == null && rangeEnd == null) {
-            events = eventRepository.findAllByInitiatorIdInAndCategoryIdIn(users, categories, PageRequest.of(page, size));
+            events = eventRepository.findAllByInitiatorIdInAndCategoryIdIn(users, categories, PageRequest.of(page,
+                    size));
         } else if (users != null && states == null && categories == null && rangeStart != null && rangeEnd == null) {
-            events = eventRepository.findAllByInitiatorIdInAndEventDateIsAfter(users, start, PageRequest.of(page, size));
+            events = eventRepository.findAllByInitiatorIdInAndEventDateIsAfter(users, start, PageRequest.of(page,
+                    size));
         } else if (users != null && states == null && categories == null && rangeStart == null && rangeEnd != null) {
-            events = eventRepository.findAllByInitiatorIdInAndEventDateIsBefore(users, end, PageRequest.of(page, size));
+            events = eventRepository.findAllByInitiatorIdInAndEventDateIsBefore(users, end, PageRequest.of(page,
+                    size));
         } else if (users != null && states != null && categories == null && rangeStart != null && rangeEnd == null) {
             events = eventRepository.findAllByInitiatorIdInAndStateInAndEventDateIsAfter(users, valueStates, start,
                     PageRequest.of(page, size));
@@ -114,7 +120,8 @@ public class AdminEventService {
             events = eventRepository.findAllByInitiatorIdInAndStateInAndEventDateIsBefore(users, valueStates, end,
                     PageRequest.of(page, size));
         } else if (users == null && states != null && categories == null && rangeStart != null && rangeEnd == null) {
-            events = eventRepository.findAllByStateInAndEventDateIsAfter(valueStates, start, PageRequest.of(page, size));
+            events = eventRepository.findAllByStateInAndEventDateIsAfter(valueStates, start, PageRequest.of(page,
+                    size));
         } else if (users == null && states != null && categories == null && rangeStart == null && rangeEnd != null) {
             events = eventRepository.findAllByAndStateInAndEventDateIsBefore(valueStates, end, PageRequest.of(page,
                     size));
@@ -122,7 +129,8 @@ public class AdminEventService {
             events = eventRepository.findAllByAndStateInAndEventDateIsAfterAndEventDateIsBefore(valueStates, start,
                     end, PageRequest.of(page, size));
         } else {
-            events = eventRepository.findAllByCategoryIdInAndEventDateIsBefore(categories, end, PageRequest.of(page, size));
+            events = eventRepository.findAllByCategoryIdInAndEventDateIsBefore(categories, end, PageRequest.of(page,
+                    size));
         }
         if (events.isEmpty()) {
             throw new RuntimeException("не найдено ивентов");
@@ -144,10 +152,10 @@ public class AdminEventService {
         if (adminEvent.getDescription() != null) {
             updatingEvent.setDescription(adminEvent.getDescription());
         }
-        if (updatingEvent.getEventDate() != null) {
+        if (adminEvent.getEventDate() != null) {
             updatingEvent.setEventDate(adminEvent.getEventDate());
         }
-        if (updatingEvent.getLocation() != null) {
+        if (adminEvent.getLocation() != null) {
             updatingEvent.setLocation(adminEvent.getLocation());
         }
         if (adminEvent.getParticipantLimit() != null) {
