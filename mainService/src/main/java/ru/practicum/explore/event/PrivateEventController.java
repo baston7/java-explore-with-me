@@ -40,9 +40,9 @@ public class PrivateEventController {
 
     @PatchMapping
     public EventFullDto updateEvent(@PathVariable Integer userId, @RequestBody UpdateEventRequestDto updateEventRequestDto) {
-        Category category=null;
-        if(updateEventRequestDto.getCategory()!=0){
-             category = categoryService.getCategoryById(updateEventRequestDto.getCategory());
+        Category category = null;
+        if (updateEventRequestDto.getCategory() != 0) {
+            category = categoryService.getCategoryById(updateEventRequestDto.getCategory());
         }
         User initiator = adminUserService.getUserById(userId);
         Event event = EventMapper.toEventFromUpdateEventDto(updateEventRequestDto, category, initiator);
@@ -53,22 +53,51 @@ public class PrivateEventController {
     public List<EventFullDto> getUserEvents(@PathVariable Integer userId,
                                             @PositiveOrZero @RequestParam(defaultValue = "0") int from,
                                             @Positive @RequestParam(defaultValue = "10") int size) {
-       adminUserService.getUserById(userId);
-       return privateEventService.getEventsByInitiatorId(userId,from / size, size).stream()
-               .map(EventMapper::toEventFullDto)
-               .collect(Collectors.toList());
+        adminUserService.getUserById(userId);
+        return privateEventService.getEventsByInitiatorId(userId, from / size, size).stream()
+                .map(EventMapper::toEventFullDto)
+                .collect(Collectors.toList());
     }
+
     @GetMapping("/{eventId}")
     public EventFullDto getUserEvent(@PathVariable Integer userId,
                                      @PathVariable Integer eventId) {
         adminUserService.getUserById(userId);
-        return EventMapper.toEventFullDto(privateEventService.getEventByEventIdAndInitiatorId(eventId,userId));
+        return EventMapper.toEventFullDto(privateEventService.getEventByEventIdAndInitiatorId(eventId, userId));
     }
+
     @PatchMapping("/{eventId}")
     public EventFullDto cancelEvent(@PathVariable Integer userId,
-                                     @PathVariable Integer eventId) {
+                                    @PathVariable Integer eventId) {
         adminUserService.getUserById(userId);
-        Event event=privateEventService.getEventByEventIdAndInitiatorId(eventId,userId);
+        Event event = privateEventService.getEventByEventIdAndInitiatorId(eventId, userId);
         return EventMapper.toEventFullDto(privateEventService.cancelEvent(event));
+    }
+
+    @GetMapping("/{eventId}/requests")
+    public List<ParticipationRequestDto> getRequestsFromEvent(@PathVariable Integer userId,
+                                                              @PathVariable Integer eventId) {
+        adminUserService.getUserById(userId);
+        return privateEventService.getRequestsFromUserEvent(eventId, userId).stream()
+                .map(RequestMapper::toParticipationRequestDtoFromRequest)
+                .collect(Collectors.toList());
+
+    }
+
+    @PatchMapping("/{eventId}/requests/{reqId}/confirm")
+    public ParticipationRequestDto confirmRequestToUserEvent(@PathVariable Integer userId,
+                                                                   @PathVariable Integer eventId,
+                                                                   @PathVariable Integer reqId) {
+        adminUserService.getUserById(userId);
+        return RequestMapper.toParticipationRequestDtoFromRequest(privateEventService.confirmRequestToUserEvent(eventId, userId,reqId));
+
+    }
+    @PatchMapping("/{eventId}/requests/{reqId}/reject")
+    public ParticipationRequestDto rejectRequestToUserEvent(@PathVariable Integer userId,
+                                                             @PathVariable Integer eventId,
+                                                             @PathVariable Integer reqId) {
+        adminUserService.getUserById(userId);
+        return RequestMapper.toParticipationRequestDtoFromRequest(privateEventService.rejectRequestToUserEvent(eventId, userId,reqId));
+
     }
 }

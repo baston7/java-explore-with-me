@@ -14,6 +14,7 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
     List<Event> findAllByInitiatorId(Integer id, PageRequest pageRequest);
     Optional<Event> findFirstByCategoryId(Integer id);
     Optional<Event> findEventByIdAndInitiatorId(Integer eventId, Integer userId);
+    List<Event> findAllByIdIn(Iterable<Integer> eventsId);
 
 
     List<Event> findAllByInitiatorIdIn(Iterable<Integer> ids, PageRequest pageRequest);

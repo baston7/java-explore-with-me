@@ -13,20 +13,20 @@ public class PrivateRequestService {
 
     public Request saveRequest(Request request) {
         Event event = request.getEvent();
-        if ((event.getParticipantLimit() == (event.getConfirmedRequests())) && event.getParticipantLimit() != 0) {
+        if ((event.getParticipantLimit() == event.getConfirmedRequests()) && event.getParticipantLimit() != 0) {
             throw new RuntimeException("Достигнут лимит участников мероприятия");
         }
         if (!event.getState().equals(State.PUBLISHED)) {
             throw new RuntimeException("Нельзя  учавствовать в неопубликованном событии");
         }
-        if (requestRepository
+        if (!requestRepository
                 .findAllByRequesterIdAndEvent_IdOrEvent_Initiator_IdAndEvent_Id(request.getRequester().getId(),
                         event.getId(), request.getRequester().getId(), event.getId()).isEmpty()) {
             throw new RuntimeException("Нельзя создать повторный запрос или учавствовать в своем событии");
         }
         if(!request.getEvent().isRequestModeration()){
             event.setConfirmedRequests(event.getConfirmedRequests()+1);
-            request.setStatus(State.PUBLISHED);
+            request.setStatus(State.CONFIRMED);
             eventRepository.save(event);
         }
 
@@ -40,7 +40,7 @@ public class PrivateRequestService {
         if (request.getStatus().equals(State.CANCELED)){
             throw new RuntimeException("Нельзя отменить уже отмененное событие");
         }
-        if(request.getStatus().equals(State.PUBLISHED)){
+        if(request.getStatus().equals(State.CONFIRMED)){
             Event event=request.getEvent();
             event.setConfirmedRequests(event.getConfirmedRequests()-1);
             eventRepository.save(event);

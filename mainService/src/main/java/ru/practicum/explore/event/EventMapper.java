@@ -2,6 +2,7 @@ package ru.practicum.explore.event;
 
 import lombok.experimental.UtilityClass;
 import ru.practicum.explore.user.UserMapper;
+import ru.practicum.explore.user.dto.UserShortDto;
 import ru.practicum.explore.user.model.User;
 
 import java.time.LocalDateTime;
@@ -32,6 +33,20 @@ public class EventMapper {
         eventFullDto.setTitle(event.getTitle());
         eventFullDto.setViews(event.getViews());
         return eventFullDto;
+    }
+
+    public static EventShortDto toEventShortDto(Event event) {
+        EventShortDto eventShortDto = new EventShortDto();
+        eventShortDto.setId(event.getId());
+        eventShortDto.setAnnotation(event.getAnnotation());
+        eventShortDto.setCategory(CategoryMapper.toCategoryDto(event.getCategory()));
+        eventShortDto.setConfirmedRequests(event.getConfirmedRequests());
+        eventShortDto.setEventDate(event.getEventDate().format(formatter));
+        eventShortDto.setInitiator(UserMapper.toUserShortDto(event.getInitiator()));
+        eventShortDto.setPaid(event.isPaid());
+        eventShortDto.setTitle(event.getTitle());
+        eventShortDto.setViews(event.getViews());
+        return eventShortDto;
     }
 
     public static Event toEventFromNewEventDto(NewEventDto newEventDto, Category category, User initiator) {
@@ -66,6 +81,7 @@ public class EventMapper {
         event.setTitle(updateEventRequestDto.getTitle());
         return event;
     }
+
     public static Event toEventFromAdminUpdateEventRequestDto(AdminUpdateEventRequestDto adminUpdateEventRequestDto, Category category) {
         Event event = new Event();
         event.setAnnotation(adminUpdateEventRequestDto.getAnnotation());
