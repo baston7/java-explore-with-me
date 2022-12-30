@@ -23,16 +23,19 @@ public class AdminCategoryController {
 
     @PostMapping
     public CategoryDto addCategory( @Valid @RequestBody CategoryDto categoryDto) {
+        log.info("Получен администраторский запрос на добавление категории: {}",categoryDto.getName());
         Category category = CategoryMapper.toCategory(categoryDto);
         return CategoryMapper.toCategoryDto(categoryService.saveCategory(category));
     }
     @PatchMapping
     public CategoryDto updateCategory( @Valid @RequestBody CategoryDto categoryDto) {
+        log.info("Получен администраторский запрос на изменение категории с id = {}",categoryDto.getId());
         Category category = CategoryMapper.toCategory(categoryDto);
         return CategoryMapper.toCategoryDto(categoryService.updateCategory(category));
     }
     @DeleteMapping("/{catId}")
     public void deleteCategory(@PathVariable Integer catId) {
+        log.info("Получен администраторский запрос на удаление категории с id = {}",catId);
         categoryService.deleteCategoryById(catId);
     }
 }

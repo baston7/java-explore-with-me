@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,12 +31,17 @@ public class PublicEventController {
                                        @RequestParam(required = false) String sort,
                                        @PositiveOrZero @RequestParam(defaultValue = "0") int from,
                                        @Positive @RequestParam(defaultValue = "10") int size) {
+        log.info("Получен публичный запрос на поиск событиий со следующими параметрами:" +
+                        " text: {}, categories: {}, paid: {}, rangeStart: {}, rangeEnd: {}, onlyAvailable: {}," +
+                        " sort: {}, from: {}, size: {}", text,
+                categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size);
         return publicEventService.findAll(text, categories, paid, rangeStart, rangeEnd, sort, onlyAvailable,
-                PageRequest.of(from / size, size)).stream().map(event -> EventMapper.toEventShortDto(event)).collect(Collectors.toList());
+                PageRequest.of(from / size, size)).stream().map(EventMapper::toEventShortDto).collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
     public EventFullDto findById(@PathVariable int id) {
+        log.info("Получен публичный запрос на поиск события с id= {}", id);
         return EventMapper.toEventFullDto(publicEventService.findById(id));
     }
 }

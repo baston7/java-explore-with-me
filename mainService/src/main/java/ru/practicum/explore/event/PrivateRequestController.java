@@ -28,14 +28,18 @@ public class PrivateRequestController {
 
     @PostMapping
     public ParticipationRequestDto addRequest(@PathVariable Integer userId, @RequestParam Integer eventId) {
+        log.info("Получен приватный запрос от пользователя с id = {} на участие" +
+                " в событии с id = {}", userId, eventId);
         ParticipationRequestDto participationRequestDto = RequestMapper.toParticipationRequestDtoFromIds(userId, eventId);
         User requester = adminUserService.getUserById(userId);
         Event event = privateEventService.getEventById(eventId);
         Request request = RequestMapper.toRequest(participationRequestDto, requester, event);
         return RequestMapper.toParticipationRequestDtoFromRequest(privateRequestService.saveRequest(request));
     }
+
     @GetMapping
     public List<ParticipationRequestDto> getUserRequests(@PathVariable Integer userId) {
+        log.info("Получен приватный запрос от пользователя с id = {} на просмотр своих заявок", userId);
         return privateRequestService.getUserRequests(userId).stream()
                 .map(RequestMapper::toParticipationRequestDtoFromRequest)
                 .collect(Collectors.toList());
@@ -43,7 +47,8 @@ public class PrivateRequestController {
 
     @PatchMapping("/{requestId}/cancel")
     public ParticipationRequestDto cancelRequest(@PathVariable Integer userId, @PathVariable Integer requestId) {
+        log.info("Получен приватный запрос от пользователя с id = {} на отмену заявки с id= {}", userId, requestId);
         adminUserService.getUserById(userId);
-        return RequestMapper.toParticipationRequestDtoFromRequest(privateRequestService.cancelRequest(requestId,userId));
+        return RequestMapper.toParticipationRequestDtoFromRequest(privateRequestService.cancelRequest(requestId, userId));
     }
 }

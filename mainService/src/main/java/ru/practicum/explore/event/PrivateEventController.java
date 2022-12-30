@@ -32,6 +32,8 @@ public class PrivateEventController {
 
     @PostMapping
     public EventFullDto addEvent(@PathVariable Integer userId, @Valid @RequestBody NewEventDto newEventDto) {
+        log.info("Получен приватный запрос от пользователя с id = {} на публикацию события с title: {}",
+                userId, newEventDto.getTitle());
         Category category = categoryService.getCategoryById(newEventDto.getCategory());
         User initiator = adminUserService.getUserById(userId);
         Event event = EventMapper.toEventFromNewEventDto(newEventDto, category, initiator);
@@ -40,6 +42,8 @@ public class PrivateEventController {
 
     @PatchMapping
     public EventFullDto updateEvent(@PathVariable Integer userId, @RequestBody UpdateEventRequestDto updateEventRequestDto) {
+        log.info("Получен приватный запрос от пользователя с id = {} на изменение события с id= {}",
+                 userId,updateEventRequestDto.getEventId());
         Category category = null;
         if (updateEventRequestDto.getCategory() != 0) {
             category = categoryService.getCategoryById(updateEventRequestDto.getCategory());
@@ -53,6 +57,8 @@ public class PrivateEventController {
     public List<EventFullDto> getUserEvents(@PathVariable Integer userId,
                                             @PositiveOrZero @RequestParam(defaultValue = "0") int from,
                                             @Positive @RequestParam(defaultValue = "10") int size) {
+        log.info("Получен приватный запрос от пользователя с id = {} на получение всех своих событий",
+                userId);
         adminUserService.getUserById(userId);
         return privateEventService.getEventsByInitiatorId(userId, from / size, size).stream()
                 .map(EventMapper::toEventFullDto)
@@ -62,6 +68,8 @@ public class PrivateEventController {
     @GetMapping("/{eventId}")
     public EventFullDto getUserEvent(@PathVariable Integer userId,
                                      @PathVariable Integer eventId) {
+        log.info("Получен приватный запрос от пользователя с id = {} на получение события с id = {}",
+                userId, eventId);
         adminUserService.getUserById(userId);
         return EventMapper.toEventFullDto(privateEventService.getEventByEventIdAndInitiatorId(eventId, userId));
     }
@@ -69,6 +77,7 @@ public class PrivateEventController {
     @PatchMapping("/{eventId}")
     public EventFullDto cancelEvent(@PathVariable Integer userId,
                                     @PathVariable Integer eventId) {
+        log.info("Получен приватный запрос от пользователя с id = {} на отмену события с id = {}",userId, eventId);
         adminUserService.getUserById(userId);
         Event event = privateEventService.getEventByEventIdAndInitiatorId(eventId, userId);
         return EventMapper.toEventFullDto(privateEventService.cancelEvent(event));
@@ -77,6 +86,8 @@ public class PrivateEventController {
     @GetMapping("/{eventId}/requests")
     public List<ParticipationRequestDto> getRequestsFromEvent(@PathVariable Integer userId,
                                                               @PathVariable Integer eventId) {
+        log.info("Получен приватный запрос от пользователя с id = {} на просмотр заявок на участие в событии с id = {}",
+                userId, eventId);
         adminUserService.getUserById(userId);
         return privateEventService.getRequestsFromUserEvent(eventId, userId).stream()
                 .map(RequestMapper::toParticipationRequestDtoFromRequest)
@@ -86,18 +97,23 @@ public class PrivateEventController {
 
     @PatchMapping("/{eventId}/requests/{reqId}/confirm")
     public ParticipationRequestDto confirmRequestToUserEvent(@PathVariable Integer userId,
-                                                                   @PathVariable Integer eventId,
-                                                                   @PathVariable Integer reqId) {
-        adminUserService.getUserById(userId);
-        return RequestMapper.toParticipationRequestDtoFromRequest(privateEventService.confirmRequestToUserEvent(eventId, userId,reqId));
-
-    }
-    @PatchMapping("/{eventId}/requests/{reqId}/reject")
-    public ParticipationRequestDto rejectRequestToUserEvent(@PathVariable Integer userId,
                                                              @PathVariable Integer eventId,
                                                              @PathVariable Integer reqId) {
+        log.info("Получен приватный запрос от пользователя с id = {} на подтверждение запроса с id= {} на участие" +
+                        " в событии с id = {}", userId,reqId ,eventId);
         adminUserService.getUserById(userId);
-        return RequestMapper.toParticipationRequestDtoFromRequest(privateEventService.rejectRequestToUserEvent(eventId, userId,reqId));
+        return RequestMapper.toParticipationRequestDtoFromRequest(privateEventService.confirmRequestToUserEvent(eventId, userId, reqId));
+
+    }
+
+    @PatchMapping("/{eventId}/requests/{reqId}/reject")
+    public ParticipationRequestDto rejectRequestToUserEvent(@PathVariable Integer userId,
+                                                            @PathVariable Integer eventId,
+                                                            @PathVariable Integer reqId) {
+        log.info("Получен приватный запрос от пользователя с id = {} на отклонение запроса с id= {} на участие" +
+                " в событии с id = {}", userId,reqId ,eventId);
+        adminUserService.getUserById(userId);
+        return RequestMapper.toParticipationRequestDtoFromRequest(privateEventService.rejectRequestToUserEvent(eventId, userId, reqId));
 
     }
 }

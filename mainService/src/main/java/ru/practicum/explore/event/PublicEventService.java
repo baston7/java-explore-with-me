@@ -1,12 +1,10 @@
 package ru.practicum.explore.event;
 
 import lombok.RequiredArgsConstructor;
-import net.bytebuddy.dynamic.loading.InjectionClassLoader;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -57,9 +55,14 @@ public class PublicEventService {
         if(events.isEmpty()){
             throw new RuntimeException("ne naideno sobytiy");
         }
+        events.forEach(event -> event.setViews(event.getViews()+1));
+        eventRepository.saveAll(events);
         return events;
     }
     public Event findById(Integer id){
-        return eventRepository.findByIdAndState(id,State.PUBLISHED).orElseThrow(()->new RuntimeException("ne naydeno"));
+        Event event= eventRepository.findByIdAndState(id,State.PUBLISHED).orElseThrow(()->new RuntimeException("ne naydeno"));
+        event.setViews(event.getViews()+1);
+        eventRepository.save(event);
+        return event;
     }
 }

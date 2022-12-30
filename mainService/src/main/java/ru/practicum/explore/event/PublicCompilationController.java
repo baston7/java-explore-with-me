@@ -23,6 +23,7 @@ public class PublicCompilationController {
     @GetMapping
     public List<CompilationDto> findAll(@RequestParam(required = false) Boolean pinned, @PositiveOrZero @RequestParam(defaultValue = "0") int from,
                                         @Positive @RequestParam(defaultValue = "10") int size) {
+        log.info("Получен публичный запрос на просмотр всех подборок событий, где pinned= {}", pinned);
         if (pinned == null) {
             return compilationService.findAll(from / size, size).stream()
                     .map(CompilationMapper::toCompilationDto)
@@ -35,6 +36,7 @@ public class PublicCompilationController {
 
     @GetMapping("/{compId}")
     public CompilationDto findById(@PathVariable Integer compId) {
+        log.info("Получен публичный запрос на просмотр подборки с id= {} ", compId);
         return CompilationMapper.toCompilationDto(compilationService.findById(compId));
     }
 }

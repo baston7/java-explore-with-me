@@ -18,13 +18,17 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PublicCategoryController {
     private final CategoryService categoryService;
+
     @GetMapping
     public List<Category> findAll(@PositiveOrZero @RequestParam(defaultValue = "0") int from,
-                                  @Positive @RequestParam(defaultValue = "10") int size){
-        return categoryService.getCategories(from/size,size);
+                                  @Positive @RequestParam(defaultValue = "10") int size) {
+        log.info("Получен публичный запрос на просмотр всех категорий");
+        return categoryService.getCategories(from / size, size);
     }
+
     @GetMapping("/{catId}")
-    public Category findById(@PathVariable Integer catId){
+    public Category findById(@PathVariable Integer catId) {
+        log.info("Получен публичный запрос на просмотр категории с id= {}", catId);
         return categoryService.getCategoryById(catId);
     }
 }

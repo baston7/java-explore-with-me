@@ -14,6 +14,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @NotNull
 public class UpdateEventRequestDto {
+    @NotNull
     private Integer eventId;
     private String annotation;
     private int category;

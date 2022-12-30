@@ -12,10 +12,14 @@ public interface RequestRepository extends JpaRepository<Request, Integer> {
 
     List<Request> findAllByRequesterId(int requester_id);
 
-    List<Request> findAllByRequesterIdAndEvent_IdOrEvent_Initiator_IdAndEvent_Id(int requester_id, int eventId, int initiator_id, int duplicateEventId);
+    List<Request> findAllByRequesterIdAndEvent_IdOrEvent_Initiator_IdAndEvent_Id(int requester_id,
+                                                                                 int eventId, int initiator_id,
+                                                                                 int duplicateEventId);
 
     List<Request> findAllByEventIdAndEventInitiatorId(int eventId, int initiatorId);
 
-    Optional<Request> findByIdAndEventIdAndEventInitiatorIdAndEventRequestModeration(int reqId, int eventId, int userId, boolean moderation);
-    List <Request> findAllByEventIdAndEventInitiatorIdAndEventRequestModeration(int eventId, int userId, boolean moderation);
+    Optional<Request> findByIdAndEventIdAndEventInitiatorIdAndEventRequestModeration(int reqId, int eventId,
+                                                                                     int userId, boolean moderation);
+    List <Request> findAllByEventIdAndEventInitiatorIdAndEventRequestModeration(int eventId, int userId,
+                                                                                boolean moderation);
 }
