@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
@@ -20,9 +21,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PublicEventController {
     private final PublicEventService publicEventService;
-
     @GetMapping
-    public List<EventShortDto> findAll(@RequestParam(required = false) String text,
+    public List<EventShortDto> findAll(HttpServletRequest request, @RequestParam(required = false) String text,
                                        @RequestParam(required = false) List<Integer> categories,
                                        @RequestParam(required = false) Boolean paid,
                                        @RequestParam(required = false) String rangeStart,
@@ -35,13 +35,13 @@ public class PublicEventController {
                         " text: {}, categories: {}, paid: {}, rangeStart: {}, rangeEnd: {}, onlyAvailable: {}," +
                         " sort: {}, from: {}, size: {}", text,
                 categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size);
-        return publicEventService.findAll(text, categories, paid, rangeStart, rangeEnd, sort, onlyAvailable,
+        return publicEventService.findAll(request,text, categories, paid, rangeStart, rangeEnd, sort, onlyAvailable,
                 PageRequest.of(from / size, size)).stream().map(EventMapper::toEventShortDto).collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
-    public EventFullDto findById(@PathVariable int id) {
+    public EventFullDto findById(HttpServletRequest request,@PathVariable int id) {
         log.info("Получен публичный запрос на поиск события с id= {}", id);
-        return EventMapper.toEventFullDto(publicEventService.findById(id));
+        return EventMapper.toEventFullDto(publicEventService.findById(request,id));
     }
 }

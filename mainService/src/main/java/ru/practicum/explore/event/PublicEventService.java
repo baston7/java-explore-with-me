@@ -1,20 +1,26 @@
 package ru.practicum.explore.event;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.support.NullValue;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.Null;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class PublicEventService {
     private final EventRepository eventRepository;
+    private final StatsClient statsClient;
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    public List<Event> findAll(String text,
+    public List<Event> findAll(HttpServletRequest request, String text,
                                List<Integer> categories,
                                Boolean paid,
                                String rangeStart,
@@ -25,7 +31,9 @@ public class PublicEventService {
         List<Event> events;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime start;
-        LocalDateTime end ;
+        LocalDateTime end;
+        boolean isCategories= false;
+        String textForSearch=null;
         Sort sorting;
 
         if (sort == null || sort.equals("EVENT_DATE")) {
@@ -46,23 +54,36 @@ public class PublicEventService {
             start = LocalDateTime.parse(rangeStart, formatter);
             end = LocalDateTime.parse(rangeEnd, formatter);
         }
-
-        if (onlyAvailable) {
-            events = eventRepository.findPublicEvents(text.toLowerCase(), categories, paid, start, end, sorting, pageRequest);
-        } else {
-            events = eventRepository.findEventsWithParamsWithoutLimit(text.toLowerCase(), categories, paid, start, end, sorting, pageRequest);
+        if(text!=null){
+            textForSearch=text.toLowerCase();
         }
-        if(events.isEmpty()){
+        if(categories!=null){
+            isCategories=true;
+        }
+        if (onlyAvailable) {
+            events = eventRepository.findPublicEvents(textForSearch, categories, paid, start, end,isCategories, sorting, pageRequest);
+        } else {
+            events = eventRepository.findEventsWithParamsWithoutLimit(textForSearch, categories, paid, start, end,isCategories, sorting, pageRequest);
+        }
+        if (events.isEmpty()) {
             throw new RuntimeException("ne naideno sobytiy");
         }
-        events.forEach(event -> event.setViews(event.getViews()+1));
+        EndpointHitDto endpointHitDto = new EndpointHitDto("ExploreWithMe", request.getRequestURI(),
+                request.getRemoteAddr(), LocalDateTime.now().format(formatter));
+
+        events.forEach(event -> event.setViews(event.getViews() + 1));
         eventRepository.saveAll(events);
+        statsClient.post(endpointHitDto);
         return events;
     }
-    public Event findById(Integer id){
-        Event event= eventRepository.findByIdAndState(id,State.PUBLISHED).orElseThrow(()->new RuntimeException("ne naydeno"));
-        event.setViews(event.getViews()+1);
+
+    public Event findById(HttpServletRequest request, Integer id) {
+        Event event = eventRepository.findByIdAndState(id, State.PUBLISHED).orElseThrow(() -> new RuntimeException("ne naydeno"));
+        EndpointHitDto endpointHitDto = new EndpointHitDto("ExploreWithMe", request.getRequestURI(),
+                request.getRemoteAddr(), LocalDateTime.now().format(formatter));
+        event.setViews(event.getViews() + 1);
         eventRepository.save(event);
+        statsClient.post(endpointHitDto);
         return event;
     }
 }
