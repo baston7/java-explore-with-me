@@ -1,10 +1,14 @@
 package ru.practicum.explore.event;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import ru.practicum.explore.category.CategoryRepository;
+import ru.practicum.explore.event.model.Event;
+import ru.practicum.explore.exception.EventNotFoundException;
+import ru.practicum.explore.exception.ForbiddenException;
 import ru.practicum.explore.user.UserRepository;
-import ru.practicum.explore.user.model.User;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -13,37 +17,41 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AdminEventService {
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
 
     public Event publishEventById(Integer id) {
-        Event event = eventRepository.findById(id).orElseThrow(() -> new RuntimeException("net takogo eventa"));
+        Event event = eventRepository.findById(id)
+                .orElseThrow(() -> new EventNotFoundException("Событие не найдено"));
         if (LocalDateTime.now().plusHours(1).isAfter(event.getEventDate())) {
-            throw new RuntimeException("дата начала события должна быть не ранее чем за час от даты публикации.");
+            throw new ForbiddenException("дата начала события должна быть не ранее чем за час от даты публикации.");
         }
         if (!event.getState().equals(State.PENDING)) {
-            throw new RuntimeException("событие должно быть в состоянии ожидания публикации");
+            throw new ForbiddenException("событие должно быть в состоянии ожидания публикации");
         }
         event.setPublishedOn(LocalDateTime.now());
         event.setState(State.PUBLISHED);
+        log.info("Событие с id={} опубликовано", id);
         return eventRepository.save(event);
     }
 
     public Event cancelEventById(Integer id) {
-        Event event = eventRepository.findById(id).orElseThrow(() -> new RuntimeException("net takogo eventa"));
-
+        Event event = eventRepository.findById(id).orElseThrow(() -> new EventNotFoundException("Событие не найдено"));
         if (event.getState().equals(State.PUBLISHED)) {
-            throw new RuntimeException("событие уже опубликовано.");
+            throw new ForbiddenException("Событие уже опубликовано.Нельзя отменить событие");
         }
         event.setState(State.CANCELED);
+        log.info("Событие с id={} отменено", id);
         return eventRepository.save(event);
     }
 
     public Event editingEvent(Integer eventId, Event adminEvent) {
-        Event event = eventRepository.findById(eventId).orElseThrow(() -> new RuntimeException("net takogo eventa"));
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new EventNotFoundException("Событие не найдено"));
         setNewFieldsForEditingAdminEvent(adminEvent, event);
+        log.info("Событие с id={} отредактировано", eventId);
         return eventRepository.save(event);
     }
 
@@ -81,11 +89,11 @@ public class AdminEventService {
         } else {
             end = LocalDateTime.now().plusYears(300);
         }
-        events=eventRepository.findAllByInitiatorIdInAndStateInAndCategoryIdInAndEventDateIsAfterAndEventDateIsBefore(
-                usersIds,valueStates,categoriesIds,start,end,PageRequest.of(page,size)
+        events = eventRepository.findAllByInitiatorIdInAndStateInAndCategoryIdInAndEventDateIsAfterAndEventDateIsBefore(
+                usersIds, valueStates, categoriesIds, start, end, PageRequest.of(page, size)
         );
-        if(events.isEmpty()){
-            throw new RuntimeException("ne naideno sobytiy");
+        if (events.isEmpty()) {
+            throw new EventNotFoundException("Событий не найдено");
         }
         return events;
     }

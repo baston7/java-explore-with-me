@@ -3,6 +3,7 @@ package ru.practicum.explore.user;
 import com.sun.jdi.Location;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.explore.user.dto.UserDto;
 import ru.practicum.explore.user.model.User;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
@@ -22,6 +24,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping(path = "/admin/users")
 @RequiredArgsConstructor
+@Validated
 public class AdminUserController {
     private final AdminUserService adminUserService;
 
@@ -43,7 +46,7 @@ public class AdminUserController {
     }
 
     @PostMapping
-    public UserDto saveUser(@RequestBody UserDto userDto) {
+    public UserDto saveUser(@Valid @RequestBody UserDto userDto) {
         log.info("Получен запрос на сохранение пользователя: {}",userDto.getName());
         User savingUser = UserMapper.toUser(userDto);
         return UserMapper.toUserDto(adminUserService.saveUser(savingUser));

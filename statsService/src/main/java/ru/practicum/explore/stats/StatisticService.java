@@ -2,7 +2,8 @@ package ru.practicum.explore.stats;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
+import ru.practicum.explore.stats.dto.ViewStats;
+import ru.practicum.explore.stats.model.Endpoint;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -13,8 +14,8 @@ import java.util.List;
 public class StatisticService {
     private final EndpointRepository endpointRepository;
 
-    public Endpoint addHit(Endpoint endpoint) {
-        return endpointRepository.save(endpoint);
+    public void addHit(Endpoint endpoint) {
+        endpointRepository.save(endpoint);
     }
 
     public List<ViewStats> getStats(List<String> uris, boolean unique, String start, String end) {

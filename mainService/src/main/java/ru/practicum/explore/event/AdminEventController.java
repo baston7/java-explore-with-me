@@ -11,6 +11,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import ru.practicum.explore.category.CategoryService;
+import ru.practicum.explore.category.model.Category;
+import ru.practicum.explore.event.dto.EventFullDto;
+import ru.practicum.explore.event.model.Event;
 
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
@@ -28,7 +32,7 @@ public class AdminEventController {
 
     @PatchMapping("/{eventId}/publish")
     public EventFullDto publishEvent(@PathVariable Integer eventId) {
-        log.info("Получен администраторский запрос на публикацию события с id= {} ",eventId);
+        log.info("Получен администраторский запрос на публикацию события с id= {} ", eventId);
         Event event = adminEventService.publishEventById(eventId);
         log.info("Событие успешно опубликовано");
         return EventMapper.toEventFullDto(event);
@@ -36,7 +40,7 @@ public class AdminEventController {
 
     @PatchMapping("/{eventId}/reject")
     public EventFullDto cancelEvent(@PathVariable Integer eventId) {
-        log.info("Получен администраторский запрос на отклонение события с id= {} ",eventId);
+        log.info("Получен администраторский запрос на отклонение события с id= {} ", eventId);
         Event event = adminEventService.cancelEventById(eventId);
         log.info("Событие успешно отклонено");
         return EventMapper.toEventFullDto(event);
@@ -45,7 +49,7 @@ public class AdminEventController {
     @PutMapping("/{eventId}")
     public EventFullDto editingEvent(@PathVariable Integer eventId,
                                      @RequestBody AdminUpdateEventRequestDto adminUpdateEventRequestDto) {
-        log.info("Получен администраторский запрос на изменение события с id= {} ",eventId);
+        log.info("Получен администраторский запрос на изменение события с id= {} ", eventId);
         Category category = null;
         if (adminUpdateEventRequestDto.getCategory() != 0) {
             category = categoryService.getCategoryById(adminUpdateEventRequestDto.getCategory());
@@ -63,8 +67,8 @@ public class AdminEventController {
                                         @PositiveOrZero @RequestParam(defaultValue = "0") int from,
                                         @Positive @RequestParam(defaultValue = "10") int size) {
         log.info("Получен администраторский запрос на поиск событиий со следующими параметрами:" +
-                " users: {}, states: {}, categories: {}, rangeStart: {}, rangeEnd: {}, from: {}, size: {}",users,
-                states, categories, rangeStart, rangeEnd, from , size);
+                        " users: {}, states: {}, categories: {}, rangeStart: {}, rangeEnd: {}, from: {}, size: {}", users,
+                states, categories, rangeStart, rangeEnd, from, size);
         List<Event> events = adminEventService.getEventsWithConditions(users, states, categories,
                 rangeStart, rangeEnd, from / size, size);
         log.info("Запрос успешно обработан");

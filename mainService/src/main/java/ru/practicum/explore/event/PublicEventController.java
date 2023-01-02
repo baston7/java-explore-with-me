@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import ru.practicum.explore.event.dto.EventFullDto;
+import ru.practicum.explore.event.dto.EventShortDto;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Positive;
@@ -40,7 +42,7 @@ public class PublicEventController {
     }
 
     @GetMapping("/{id}")
-    public EventFullDto findById(HttpServletRequest request,@PathVariable int id) {
+    public EventFullDto findById(HttpServletRequest request, @PathVariable int id) {
         log.info("Получен публичный запрос на поиск события с id= {}", id);
         return EventMapper.toEventFullDto(publicEventService.findById(request,id));
     }

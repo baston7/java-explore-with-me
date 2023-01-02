@@ -11,6 +11,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import ru.practicum.explore.category.model.Category;
+import ru.practicum.explore.category.CategoryService;
+import ru.practicum.explore.event.dto.EventFullDto;
+import ru.practicum.explore.event.dto.NewEventDto;
+import ru.practicum.explore.event.dto.UpdateEventRequestDto;
+import ru.practicum.explore.event.model.Event;
+import ru.practicum.explore.request.dto.ParticipationRequestDto;
+import ru.practicum.explore.request.RequestMapper;
 import ru.practicum.explore.user.AdminUserService;
 import ru.practicum.explore.user.model.User;
 

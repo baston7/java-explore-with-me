@@ -1,8 +1,16 @@
 package ru.practicum.explore.event;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import ru.practicum.explore.event.model.Event;
+import ru.practicum.explore.exception.EventNotFoundException;
+import ru.practicum.explore.exception.ForbiddenException;
+import ru.practicum.explore.exception.RequestNotFoundException;
+import ru.practicum.explore.exception.ValidationException;
+import ru.practicum.explore.request.RequestRepository;
+import ru.practicum.explore.request.model.Request;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -11,68 +19,79 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class PrivateEventService {
     private final EventRepository eventRepository;
     private final RequestRepository requestRepository;
 
     public Event saveEvent(Event event) {
         if (event.getEventDate().isBefore(LocalDateTime.now().plusHours(2))) {
-            throw new RuntimeException("vrem9 ploxoe");
+            throw new ValidationException("Дата и время на которые намечено событие не может быть раньше," +
+                    " чем через два часа от текущего момента");
         }
-        return eventRepository.save(event);
+        Event newEvent = eventRepository.save(event);
+        log.info("Событие с id={} добавлено", newEvent.getId());
+        return newEvent;
     }
 
     public Event updateEvent(Event newEvent) {
-        Event updatingEvent = eventRepository.findById(newEvent.getId()).orElseThrow(() -> new RuntimeException("ne naiden event na obnovlenie"));
+        Event updatingEvent = eventRepository.findById(newEvent.getId())
+                .orElseThrow(() -> new EventNotFoundException("Не найдено событие на обновление"));
         if (newEvent.getInitiator().getId() != updatingEvent.getInitiator().getId()) {
-            throw new RuntimeException("ids polzovateley ne sovpadayut");
+            throw new ForbiddenException("Только создатель может обновлять мероприятие");
         }
         if (updatingEvent.getState() == State.PUBLISHED) {
-            throw new RuntimeException("nelz9 izmenit opublikovannoe sobytie");
+            throw new ForbiddenException("Нельзя изменить уже опубликованное администратором событие");
         }
         if (newEvent.getEventDate().isBefore(LocalDateTime.now().plusHours(2))) {
-            throw new RuntimeException("vrem9 ploxoe");
+            throw new ValidationException("Дата и время на которые намечено событие не может быть раньше," +
+                    " чем через два часа от текущего момента");
         }
         if (updatingEvent.getState() == State.CANCELED) {
             updatingEvent.setState(State.PENDING);
         }
         setNewFieldsForUpdateEvent(newEvent, updatingEvent);
+        log.info("Событие с id={} обновлено", newEvent.getId());
         return eventRepository.save(updatingEvent);
     }
 
     public List<Event> getEventsByInitiatorId(Integer initiatorId, int page, int size) {
-        List<Event> userEvents = new ArrayList<>(eventRepository.findAllByInitiatorId(initiatorId, PageRequest.of(page, size)));
+        List<Event> userEvents = new ArrayList<>(eventRepository.findAllByInitiatorId(initiatorId,
+                PageRequest.of(page, size)));
         if (userEvents.isEmpty()) {
-            throw new RuntimeException("нет событий у пользователя");
+            throw new EventNotFoundException("Нет событий у пользователя");
         }
+        log.info("Запрос обработан");
         return userEvents;
     }
 
     public Event getEventById(int eventId) {
-        return eventRepository.findById(eventId).orElseThrow(() -> new RuntimeException("ne naiden event"));
+        return eventRepository.findById(eventId).orElseThrow(() -> new EventNotFoundException("Событие не найдено"));
     }
 
     public Event getEventByEventIdAndInitiatorId(Integer eventId, Integer initiatorId) {
         return eventRepository.findEventByIdAndInitiatorId(eventId, initiatorId)
-                .orElseThrow(() -> new RuntimeException("ne naiden event polzovatel9"));
+                .orElseThrow(() -> new EventNotFoundException("Не найдено событие пользователя"));
     }
 
     public Event cancelEvent(Event event) {
         if (event.getState().equals(State.CANCELED)) {
-            throw new RuntimeException("нельзя отменить уже отмененное событие");
+            throw new ForbiddenException("Нельзя отменить уже отмененное событие");
         }
         if (event.getState().equals(State.PUBLISHED)) {
-            throw new RuntimeException("нельзя отменить уже опубликованное событие");
+            throw new ForbiddenException("Нельзя отменить уже опубликованное событие");
         }
         event.setState(State.CANCELED);
+        log.info("Событие с id={} отменено", event.getId());
         return eventRepository.save(event);
     }
 
     public List<Request> getRequestsFromUserEvent(int eventId, int initiatorId) {
         List<Request> requests = requestRepository.findAllByEventIdAndEventInitiatorId(eventId, initiatorId);
         if (requests.isEmpty()) {
-            throw new RuntimeException("нет заявок на события пользователя или самих событий нет");
+            throw new RequestNotFoundException("нет заявок на событие пользователя");
         }
+        log.info("Запрос на получение заявок обработан");
         return requests;
     }
 
@@ -80,15 +99,15 @@ public class PrivateEventService {
         Optional<Request> request = requestRepository
                 .findByIdAndEventIdAndEventInitiatorIdAndEventRequestModeration(reqId, eventId, userId, true);
         if (request.isEmpty()) {
-            throw new RuntimeException("нет заявки на подтверждение");
+            throw new RequestNotFoundException("Нет заявки на подтверждение");
 
         } else if (request.get().getEvent().getParticipantLimit() == 0) {
-            throw new RuntimeException("нет заявки на подтверждение");
+            throw new ForbiddenException("На данное событие нельзя подтвержать заявки");
         } else {
             Request valueRequest = request.get();
             Event event = request.get().getEvent();
             if (event.getConfirmedRequests() == event.getParticipantLimit()) {
-                throw new RuntimeException("нельзя подтвердить заявку," +
+                throw new ForbiddenException("Нельзя подтвердить заявку," +
                         " если уже достигнут лимит по заявкам на данное событие");
             }
 
@@ -103,6 +122,7 @@ public class PrivateEventService {
                 }
             }
             valueRequest.setStatus(State.CONFIRMED);
+            log.info("Запрос на подтверждение заявки обработан");
             return requestRepository.save(valueRequest);
         }
     }
@@ -111,16 +131,18 @@ public class PrivateEventService {
         Optional<Request> request = requestRepository
                 .findByIdAndEventIdAndEventInitiatorIdAndEventRequestModeration(reqId, eventId, userId, true);
         if (request.isEmpty()) {
-            throw new RuntimeException("нет заявки на отклонение");
+            throw new RequestNotFoundException("Нет заявки на отклонение");
 
         } else if (request.get().getEvent().getParticipantLimit() == 0) {
-            throw new RuntimeException("нет заявки на отклонение");
+            throw new ForbiddenException("Нельзя отклонять заявки на это событие");
         } else {
             Request valueRequest = request.get();
             valueRequest.setStatus(State.REJECTED);
+            log.info("Запрос на отклонение заявки обработан");
             return requestRepository.save(valueRequest);
         }
     }
+
     public List<Event> getAllByEventsIds(List<Integer> eventsIds) {
         return eventRepository.findAllByIdIn(eventsIds);
     }

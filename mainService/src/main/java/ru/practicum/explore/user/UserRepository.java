@@ -10,7 +10,8 @@ import java.util.List;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
-    List<User> findUsersByIdIn(Iterable<Integer>ids, PageRequest pageRequest);
+    List<User> findUsersByIdIn(Iterable<Integer> ids, PageRequest pageRequest);
+
     @Query("select id from User")
     List<Integer> findUsersIds();
 }

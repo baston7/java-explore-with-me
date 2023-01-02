@@ -1,13 +1,18 @@
 package ru.practicum.explore.event;
 
 import lombok.experimental.UtilityClass;
+import ru.practicum.explore.category.CategoryMapper;
+import ru.practicum.explore.category.model.Category;
+import ru.practicum.explore.event.dto.EventFullDto;
+import ru.practicum.explore.event.dto.EventShortDto;
+import ru.practicum.explore.event.dto.NewEventDto;
+import ru.practicum.explore.event.dto.UpdateEventRequestDto;
+import ru.practicum.explore.event.model.Event;
 import ru.practicum.explore.user.UserMapper;
-import ru.practicum.explore.user.dto.UserShortDto;
 import ru.practicum.explore.user.model.User;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Optional;
 
 
 @UtilityClass
@@ -68,7 +73,8 @@ public class EventMapper {
         return event;
     }
 
-    public static Event toEventFromUpdateEventDto(UpdateEventRequestDto updateEventRequestDto, Category category, User initiator) {
+    public static Event toEventFromUpdateEventDto(UpdateEventRequestDto updateEventRequestDto,
+                                                  Category category, User initiator) {
         Event event = new Event();
         event.setAnnotation(updateEventRequestDto.getAnnotation());
         event.setCategory(category);
@@ -82,7 +88,8 @@ public class EventMapper {
         return event;
     }
 
-    public static Event toEventFromAdminUpdateEventRequestDto(AdminUpdateEventRequestDto adminUpdateEventRequestDto, Category category) {
+    public static Event toEventFromAdminUpdateEventRequestDto(AdminUpdateEventRequestDto adminUpdateEventRequestDto,
+                                                              Category category) {
         Event event = new Event();
         event.setAnnotation(adminUpdateEventRequestDto.getAnnotation());
         event.setCategory(category);
