@@ -9,10 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.explore.hit.EndpointHitDto;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-
 @Service
 public class StatsClient extends BaseClient {
     @Autowired
