@@ -16,7 +16,7 @@ public class BaseClient {
         this.rest = rest;
     }
 
-    protected ResponseEntity<Object> get(String path, @Nullable Map<String, Object> parameters) {
+    protected ResponseEntity<Object> get(String path, Map<String, Object> parameters) {
         return makeAndSendRequest(HttpMethod.GET, path, parameters, null);
     }
 
@@ -25,7 +25,7 @@ public class BaseClient {
     }
 
     private <T> ResponseEntity<Object> makeAndSendRequest(HttpMethod method, String path,
-                                                          @Nullable Map<String, Object> parameters, T body) {
+                                                          Map<String, Object> parameters, T body) {
         HttpEntity<T> requestEntity = new HttpEntity<>(body);
 
         ResponseEntity<Object> serverResponse;
