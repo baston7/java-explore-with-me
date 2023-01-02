@@ -10,10 +10,10 @@ import java.util.Optional;
 @Repository
 public interface RequestRepository extends JpaRepository<Request, Integer> {
 
-    List<Request> findAllByRequesterId(int requester_id);
+    List<Request> findAllByRequesterId(int requesterId);
 
-    List<Request> findAllByRequesterIdAndEvent_IdOrEvent_Initiator_IdAndEvent_Id(int requester_id,
-                                                                                 int eventId, int initiator_id,
+    List<Request> findAllByRequesterIdAndEvent_IdOrEvent_Initiator_IdAndEvent_Id(int requesterId,
+                                                                                 int eventId, int initiatorId,
                                                                                  int duplicateEventId);
 
     List<Request> findAllByEventIdAndEventInitiatorId(int eventId, int initiatorId);

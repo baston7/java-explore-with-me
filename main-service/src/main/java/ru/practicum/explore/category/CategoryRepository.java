@@ -12,5 +12,6 @@ import java.util.List;
 public interface CategoryRepository extends JpaRepository<Category, Integer> {
     @Query("select id from Category")
     List<Integer> findCategoriesIds();
-    List<Category>findBy(PageRequest pageRequest);
+
+    List<Category> findBy(PageRequest pageRequest);
 }

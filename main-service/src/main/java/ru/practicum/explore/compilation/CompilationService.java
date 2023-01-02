@@ -9,7 +9,6 @@ import ru.practicum.explore.event.EventRepository;
 import ru.practicum.explore.event.model.Event;
 import ru.practicum.explore.exception.CompilationNotFoundException;
 import ru.practicum.explore.exception.EventNotFoundException;
-import ru.practicum.explore.exception.ForbiddenException;
 import ru.practicum.explore.exception.ValidationException;
 
 import java.util.List;

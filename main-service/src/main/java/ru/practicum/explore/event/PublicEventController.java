@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PublicEventController {
     private final PublicEventService publicEventService;
+
     @GetMapping
     public List<EventShortDto> findAll(HttpServletRequest request, @RequestParam(required = false) String text,
                                        @RequestParam(required = false) List<Integer> categories,
@@ -37,13 +38,13 @@ public class PublicEventController {
                         " text: {}, categories: {}, paid: {}, rangeStart: {}, rangeEnd: {}, onlyAvailable: {}," +
                         " sort: {}, from: {}, size: {}", text,
                 categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size);
-        return publicEventService.findAll(request,text, categories, paid, rangeStart, rangeEnd, sort, onlyAvailable,
+        return publicEventService.findAll(request, text, categories, paid, rangeStart, rangeEnd, sort, onlyAvailable,
                 PageRequest.of(from / size, size)).stream().map(EventMapper::toEventShortDto).collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
     public EventFullDto findById(HttpServletRequest request, @PathVariable int id) {
         log.info("Получен публичный запрос на поиск события с id= {}", id);
-        return EventMapper.toEventFullDto(publicEventService.findById(request,id));
+        return EventMapper.toEventFullDto(publicEventService.findById(request, id));
     }
 }

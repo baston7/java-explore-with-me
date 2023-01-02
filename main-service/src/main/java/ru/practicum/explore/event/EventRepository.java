@@ -43,5 +43,4 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
     List<Event> findEventsWithParamsWithoutLimit(String text, List<Integer> categoriesIds, Boolean paid,
                                                  LocalDateTime start, LocalDateTime end, boolean categories,
                                                  Sort sort, PageRequest pageRequest);
-
 }

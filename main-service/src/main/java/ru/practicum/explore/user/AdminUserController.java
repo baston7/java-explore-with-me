@@ -1,6 +1,5 @@
 package ru.practicum.explore.user;
 
-import com.sun.jdi.Location;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
@@ -20,6 +19,7 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 import java.util.stream.Collectors;
+
 @Slf4j
 @RestController
 @RequestMapping(path = "/admin/users")
@@ -38,7 +38,7 @@ public class AdminUserController {
                     .map(UserMapper::toUserDto)
                     .collect(Collectors.toList());
         } else {
-            log.info("Получен запрос на поиск пользователей c ids={}",ids);
+            log.info("Получен запрос на поиск пользователей c ids={}", ids);
             return adminUserService.getUsersByIds(ids, from / size, size).stream()
                     .map(UserMapper::toUserDto)
                     .collect(Collectors.toList());
@@ -47,14 +47,14 @@ public class AdminUserController {
 
     @PostMapping
     public UserDto saveUser(@Valid @RequestBody UserDto userDto) {
-        log.info("Получен запрос на сохранение пользователя: {}",userDto.getName());
+        log.info("Получен запрос на сохранение пользователя: {}", userDto.getName());
         User savingUser = UserMapper.toUser(userDto);
         return UserMapper.toUserDto(adminUserService.saveUser(savingUser));
     }
 
     @DeleteMapping("/{userId}")
     public void deleteUser(@PathVariable Integer userId) {
-        log.info("Получен запрос на удаление пользователя c id={}",userId);
+        log.info("Получен запрос на удаление пользователя c id={}", userId);
         adminUserService.deleteUser(userId);
     }
 }
