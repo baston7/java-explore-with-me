@@ -2,6 +2,7 @@ package ru.practicum.explore.category;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "/categories")
 @RequiredArgsConstructor
+@Validated
 public class PublicCategoryController {
     private final CategoryService categoryService;
 
@@ -28,8 +30,8 @@ public class PublicCategoryController {
     }
 
     @GetMapping("/{catId}")
-    public Category findById(@PathVariable Integer catId) {
-        log.info("Получен публичный запрос на просмотр категории с id= {}", catId);
-        return categoryService.getCategoryById(catId);
+    public Category findById(@PathVariable(name = "catId") Integer categoryId) {
+        log.info("Получен публичный запрос на просмотр категории с id= {}", categoryId);
+        return categoryService.getCategoryById(categoryId);
     }
 }

@@ -2,7 +2,6 @@ package ru.practicum.explore.compilation;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,7 +22,6 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "/admin/compilations")
 @RequiredArgsConstructor
-@Validated
 public class AdminCompilationController {
     private final CompilationService compilationService;
     private final PrivateEventService privateEventService;
@@ -39,34 +37,38 @@ public class AdminCompilationController {
     }
 
     @DeleteMapping("/{compId}")
-    public void deleteCompilation(@PathVariable Integer compId) {
-        log.info("Получен администраторский запрос на удаление подборки с id = {}", compId);
-        compilationService.deleteById(compId);
+    public void deleteCompilation(@PathVariable(name = "compId") Integer compilationId) {
+        log.info("Получен администраторский запрос на удаление подборки с id = {}", compilationId);
+        compilationService.deleteById(compilationId);
     }
 
     @DeleteMapping("/{compId}/events/{eventId}")
-    public void deleteEventFromCompilation(@PathVariable Integer compId, @PathVariable Integer eventId) {
+    public void deleteEventFromCompilation(@PathVariable(name = "compId") Integer compilationId,
+                                           @PathVariable(name = "eventId") Integer eventId) {
         log.info("Получен администраторский запрос на удаление события с id = {}, из подборки с id = {} ",
-                eventId, compId);
-        compilationService.deleteEventFromComp(compId, eventId);
+                eventId, compilationId);
+        compilationService.deleteEventFromComp(compilationId, eventId);
     }
 
     @PatchMapping("/{compId}/events/{eventId}")
-    public void addEventToCompilation(@PathVariable Integer compId, @PathVariable Integer eventId) {
+    public void addEventToCompilation(@PathVariable(name = "compId") Integer compilationId,
+                                      @PathVariable(name = "eventId") Integer eventId) {
         log.info("Получен администраторский запрос на добавление события с id = {}, в подборку с id = {} ",
-                eventId, compId);
-        compilationService.addEventToCompilation(compId, eventId);
+                eventId, compilationId);
+        compilationService.addEventToCompilation(compilationId, eventId);
     }
 
     @DeleteMapping("/{compId}/pin")
-    public void unpinCompilation(@PathVariable Integer compId) {
-        log.info("Получен администраторский запрос на открепление подборки на главной странице с id = {} ", compId);
-        compilationService.unpinCompilation(compId);
+    public void unpinCompilation(@PathVariable(name = "compId") Integer compilationId) {
+        log.info("Получен администраторский запрос на открепление подборки на главной странице с id = {} ",
+                compilationId);
+        compilationService.unpinCompilation(compilationId);
     }
 
     @PatchMapping("/{compId}/pin")
-    public void pinCompilation(@PathVariable Integer compId) {
-        log.info("Получен администраторский запрос на закрепление подборки на главной странице с id = {} ", compId);
-        compilationService.pinCompilation(compId);
+    public void pinCompilation(@PathVariable(name = "compId") Integer compilationId) {
+        log.info("Получен администраторский запрос на закрепление подборки на главной странице с id = {} ",
+                compilationId);
+        compilationService.pinCompilation(compilationId);
     }
 }

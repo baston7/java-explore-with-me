@@ -3,6 +3,7 @@ package ru.practicum.explore.event;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping(path = "/events")
 @RequiredArgsConstructor
+@Validated
 public class PublicEventController {
     private final PublicEventService publicEventService;
 
@@ -39,12 +41,14 @@ public class PublicEventController {
                         " sort: {}, from: {}, size: {}", text,
                 categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size);
         return publicEventService.findAll(request, text, categories, paid, rangeStart, rangeEnd, sort, onlyAvailable,
-                PageRequest.of(from / size, size)).stream().map(EventMapper::toEventShortDto).collect(Collectors.toList());
+                        PageRequest.of(from / size, size)).stream()
+                .map(EventMapper::toEventShortDto)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
-    public EventFullDto findById(HttpServletRequest request, @PathVariable int id) {
-        log.info("Получен публичный запрос на поиск события с id= {}", id);
-        return EventMapper.toEventFullDto(publicEventService.findById(request, id));
+    public EventFullDto findById(HttpServletRequest request, @PathVariable(name = "id") int eventId) {
+        log.info("Получен публичный запрос на поиск события с id= {}", eventId);
+        return EventMapper.toEventFullDto(publicEventService.findById(request, eventId));
     }
 }

@@ -2,7 +2,6 @@ package ru.practicum.explore.request;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,17 +23,18 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping(path = "/users/{userId}/requests")
 @RequiredArgsConstructor
-@Validated
 public class PrivateRequestController {
     private final AdminUserService adminUserService;
     private final PrivateEventService privateEventService;
     private final PrivateRequestService privateRequestService;
 
     @PostMapping
-    public ParticipationRequestDto addRequest(@PathVariable Integer userId, @RequestParam Integer eventId) {
+    public ParticipationRequestDto addRequest(@PathVariable(name = "userId") Integer userId,
+                                              @RequestParam Integer eventId) {
         log.info("Получен приватный запрос от пользователя с id = {} на участие" +
                 " в событии с id = {}", userId, eventId);
-        ParticipationRequestDto participationRequestDto = RequestMapper.toParticipationRequestDtoFromIds(userId, eventId);
+        ParticipationRequestDto participationRequestDto = RequestMapper.toParticipationRequestDtoFromIds(userId,
+                eventId);
         User requester = adminUserService.getUserById(userId);
         Event event = privateEventService.getEventById(eventId);
         Request request = RequestMapper.toRequest(participationRequestDto, requester, event);
@@ -42,7 +42,7 @@ public class PrivateRequestController {
     }
 
     @GetMapping
-    public List<ParticipationRequestDto> getUserRequests(@PathVariable Integer userId) {
+    public List<ParticipationRequestDto> getUserRequests(@PathVariable(name = "userId") Integer userId) {
         log.info("Получен приватный запрос от пользователя с id = {} на просмотр своих заявок", userId);
         return privateRequestService.getUserRequests(userId).stream()
                 .map(RequestMapper::toParticipationRequestDtoFromRequest)
@@ -50,9 +50,11 @@ public class PrivateRequestController {
     }
 
     @PatchMapping("/{requestId}/cancel")
-    public ParticipationRequestDto cancelRequest(@PathVariable Integer userId, @PathVariable Integer requestId) {
+    public ParticipationRequestDto cancelRequest(@PathVariable(name = "userId") Integer userId,
+                                                 @PathVariable(name = "requestId") Integer requestId) {
         log.info("Получен приватный запрос от пользователя с id = {} на отмену заявки с id= {}", userId, requestId);
         adminUserService.getUserById(userId);
-        return RequestMapper.toParticipationRequestDtoFromRequest(privateRequestService.cancelRequest(requestId, userId));
+        return RequestMapper.toParticipationRequestDtoFromRequest(privateRequestService.cancelRequest(requestId,
+                userId));
     }
 }

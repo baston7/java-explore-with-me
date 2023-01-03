@@ -1,8 +1,10 @@
 package ru.practicum.explore.event.model;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import ru.practicum.explore.category.model.Category;
 import ru.practicum.explore.event.Location;
 import ru.practicum.explore.event.State;
@@ -27,37 +29,36 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Entity
 @Table(name = "events", schema = "public")
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-    private String annotation;
+    int id;
+    String annotation;
     @OneToOne
     @JoinColumn(name = "category_id")
-    private Category category;
+    Category category;
     @Column(name = "confirmed_requests")
-    private int confirmedRequests;
-    private String description;
+    int confirmedRequests;
+    String description;
     @Column(name = "published_on")
-    private LocalDateTime publishedOn;
+    LocalDateTime publishedOn;
     @Column(name = "event_date")
-    private LocalDateTime eventDate;
+    LocalDateTime eventDate;
     @Column(name = "created_on")
-    private LocalDateTime createdOn;
+    LocalDateTime createdOn;
     @Enumerated(EnumType.STRING)
-    private State state;
-    private int views;
+    State state;
+    int views;
     @ManyToOne
     @JoinColumn(name = "initiator_id")
-    private User initiator;
+    User initiator;
     @Embedded
-    private Location location;
-
-    private boolean paid;
+    Location location;
+    boolean paid;
     @Column(name = "participant_limit")
-    private Integer participantLimit;
+    Integer participantLimit;
     @Column(name = "request_moderation")
-    private boolean requestModeration;
-
-    private String title;
+    boolean requestModeration;
+    String title;
 }

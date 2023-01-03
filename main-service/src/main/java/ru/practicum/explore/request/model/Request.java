@@ -1,8 +1,10 @@
 package ru.practicum.explore.request.model;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import ru.practicum.explore.event.model.Event;
 import ru.practicum.explore.event.State;
 import ru.practicum.explore.user.model.User;
@@ -23,17 +25,18 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Entity
 @Table(name = "requests", schema = "public")
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Request {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-    private LocalDateTime created;
+    Integer id;
+    LocalDateTime created;
     @ManyToOne
     @JoinColumn(name = "event_id")
-    private Event event;
+    Event event;
     @ManyToOne
     @JoinColumn(name = "requester_id")
-    private User requester;
+    User requester;
     @Enumerated(EnumType.STRING)
-    private State status;
+    State status;
 }

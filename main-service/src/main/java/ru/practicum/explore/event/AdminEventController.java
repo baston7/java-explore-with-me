@@ -31,7 +31,7 @@ public class AdminEventController {
     private final CategoryService categoryService;
 
     @PatchMapping("/{eventId}/publish")
-    public EventFullDto publishEvent(@PathVariable Integer eventId) {
+    public EventFullDto publishEvent(@PathVariable(name = "eventId") Integer eventId) {
         log.info("Получен администраторский запрос на публикацию события с id= {} ", eventId);
         Event event = adminEventService.publishEventById(eventId);
         log.info("Событие успешно опубликовано");
@@ -39,7 +39,7 @@ public class AdminEventController {
     }
 
     @PatchMapping("/{eventId}/reject")
-    public EventFullDto cancelEvent(@PathVariable Integer eventId) {
+    public EventFullDto cancelEvent(@PathVariable(name = "eventId") Integer eventId) {
         log.info("Получен администраторский запрос на отклонение события с id= {} ", eventId);
         Event event = adminEventService.cancelEventById(eventId);
         log.info("Событие успешно отклонено");
@@ -47,7 +47,7 @@ public class AdminEventController {
     }
 
     @PutMapping("/{eventId}")
-    public EventFullDto editingEvent(@PathVariable Integer eventId,
+    public EventFullDto editingEvent(@PathVariable(name = "eventId") Integer eventId,
                                      @RequestBody AdminUpdateEventRequestDto adminUpdateEventRequestDto) {
         log.info("Получен администраторский запрос на изменение события с id= {} ", eventId);
         Category category = null;
@@ -67,8 +67,8 @@ public class AdminEventController {
                                         @PositiveOrZero @RequestParam(defaultValue = "0") int from,
                                         @Positive @RequestParam(defaultValue = "10") int size) {
         log.info("Получен администраторский запрос на поиск событиий со следующими параметрами:" +
-                        " users: {}, states: {}, categories: {}, rangeStart: {}, rangeEnd: {}, from: {}, size: {}", users,
-                states, categories, rangeStart, rangeEnd, from, size);
+                        " users: {}, states: {}, categories: {}, rangeStart: {}, rangeEnd: {}, from: {}, size: {}",
+                users, states, categories, rangeStart, rangeEnd, from, size);
         List<Event> events = adminEventService.getEventsWithConditions(users, states, categories,
                 rangeStart, rangeEnd, from / size, size);
         log.info("Запрос успешно обработан");

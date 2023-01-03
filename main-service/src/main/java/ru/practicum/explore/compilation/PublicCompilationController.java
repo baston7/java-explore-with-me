@@ -2,6 +2,7 @@ package ru.practicum.explore.compilation;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping(path = "/compilations")
 @RequiredArgsConstructor
+@Validated
 public class PublicCompilationController {
     private final CompilationService compilationService;
 
@@ -37,8 +39,8 @@ public class PublicCompilationController {
     }
 
     @GetMapping("/{compId}")
-    public CompilationDto findById(@PathVariable Integer compId) {
-        log.info("Получен публичный запрос на просмотр подборки с id= {} ", compId);
-        return CompilationMapper.toCompilationDto(compilationService.findById(compId));
+    public CompilationDto findById(@PathVariable(name = "compId") Integer compilationId) {
+        log.info("Получен публичный запрос на просмотр подборки с id= {} ", compilationId);
+        return CompilationMapper.toCompilationDto(compilationService.findById(compilationId));
     }
 }

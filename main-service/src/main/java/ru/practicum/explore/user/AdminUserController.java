@@ -53,7 +53,7 @@ public class AdminUserController {
     }
 
     @DeleteMapping("/{userId}")
-    public void deleteUser(@PathVariable Integer userId) {
+    public void deleteUser(@PathVariable(name = "userId") Integer userId) {
         log.info("Получен запрос на удаление пользователя c id={}", userId);
         adminUserService.deleteUser(userId);
     }

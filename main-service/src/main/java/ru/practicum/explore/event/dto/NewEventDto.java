@@ -1,9 +1,11 @@
 package ru.practicum.explore.event.dto;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.FieldDefaults;
 import ru.practicum.explore.event.Location;
 
 import javax.validation.constraints.NotBlank;
@@ -14,23 +16,24 @@ import javax.validation.constraints.Positive;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class NewEventDto {
     @NotBlank
-    private String annotation;
+    String annotation;
     @NotNull
-    private Integer category;
+    Integer category;
     @NotBlank
-    private String description;
+    String description;
     @NotBlank
-    private String eventDate;
+    String eventDate;
     @NotNull
-    private Location location;
+    Location location;
     @NotNull
-    private boolean paid;
+    boolean paid;
     @Positive
-    private Integer participantLimit;
+    Integer participantLimit;
     @NotNull
-    private boolean requestModeration;
+    boolean requestModeration;
     @NotBlank
-    private String title;
+    String title;
 }

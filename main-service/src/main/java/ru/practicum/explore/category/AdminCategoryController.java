@@ -2,7 +2,6 @@ package ru.practicum.explore.category;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,7 +18,6 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping(path = "/admin/categories")
 @RequiredArgsConstructor
-@Validated
 public class AdminCategoryController {
     private final CategoryService categoryService;
 
@@ -38,8 +36,8 @@ public class AdminCategoryController {
     }
 
     @DeleteMapping("/{catId}")
-    public void deleteCategory(@PathVariable Integer catId) {
-        log.info("Получен администраторский запрос на удаление категории с id = {}", catId);
-        categoryService.deleteCategoryById(catId);
+    public void deleteCategory(@PathVariable(name = "catId") Integer categoryId) {
+        log.info("Получен администраторский запрос на удаление категории с id = {}", categoryId);
+        categoryService.deleteCategoryById(categoryId);
     }
 }
