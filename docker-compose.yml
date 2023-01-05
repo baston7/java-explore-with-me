@@ -1,15 +1,53 @@
 version: '3.1'
+
 services:
-  stats-server:
-    ports:
-      - "9090:9090"
-
-  stats-db:
-    image: postgres:14-alpine
-
   ewm-service:
+    build: main-service
+    container_name: main_server
     ports:
       - "8080:8080"
+    depends_on:
+      - ewm-db
+    environment:
+      - STATS_SERVER_URL=http://stats-server:9090
+      - DB_NAME=exploreMain
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=3061334
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://exploreMain:5432/exploreMain
 
   ewm-db:
-    image: postgres:14-alpine
+    image: postgres:13.7-alpine
+    container_name: exploreMain
+    ports:
+      - "6541:5432"
+    volumes:
+      - /var/lib/postgresql/data/
+    environment:
+      POSTGRES_DB: exploreMain
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 3061334
+
+  stats-server:
+    build: stats-service
+    image: stats
+    container_name: stats_server
+    ports:
+      - "9090:9090"
+    depends_on:
+      - stats-db
+      - ewm-service
+    environment:
+      - DB_NAME=exploreStats
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=3061334
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://exploreStats:5432/exploreStats
+
+  stats-db:
+    image: postgres:13.7-alpine
+    container_name: exploreStats
+    ports:
+      - "6543:5432"
+    environment:
+      POSTGRES_DB: exploreStats
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 3061334
