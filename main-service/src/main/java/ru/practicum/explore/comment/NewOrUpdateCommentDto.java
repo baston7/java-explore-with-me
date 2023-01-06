@@ -7,18 +7,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
+import javax.validation.constraints.Size;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CommentDto {
-    int id;
+public class NewOrUpdateCommentDto {
+    @Size(min = 1, max = 3000, message = "Комментарий должен содержать от 1 до 3000 символов")
     String text;
-    int authorId;
-    int eventId;
-    CommentState state;
-    String published;
-    String created;
-    String rejectReason;
 }

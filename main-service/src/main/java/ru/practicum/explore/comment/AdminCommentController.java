@@ -2,53 +2,62 @@ package ru.practicum.explore.comment;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import ru.practicum.explore.category.CategoryMapper;
-import ru.practicum.explore.category.CategoryService;
-import ru.practicum.explore.category.dto.CategoryDto;
-import ru.practicum.explore.category.model.Category;
-import ru.practicum.explore.event.EventMapper;
-import ru.practicum.explore.event.dto.EventFullDto;
-import ru.practicum.explore.event.model.Event;
 
-import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Slf4j
 @RestController
 @RequestMapping(path = "/admin/comments")
 @RequiredArgsConstructor
 
 public class AdminCommentController {
-    private final CommentService commentService;
+    private final AdminCommentService adminCommentService;
 
     @PatchMapping("/{commentId}/publish")
-    public EventFullDto publishComment(@PathVariable(name = "commentId") Integer commentId) {
-        log.info("Получен администраторский запрос на публикацию события с id= {} ", commentId);
-        log.info("Событие успешно опубликовано");
-        return null;
+    public CommentDto publishComment(@PathVariable(name = "commentId") Integer commentId) {
+        log.info("Получен администраторский запрос на публикацию комментария с id= {} ", commentId);
+        return CommentMapper.toCommentDto(adminCommentService.publishComment(commentId));
     }
+
     @PatchMapping("/{commentId}/reject")
-    public EventFullDto cancelEvent(@PathVariable(name = "commentId") Integer commentId,) {
-        log.info("Получен администраторский запрос на отклонение события с id= {} ", commentId);
-        log.info("Событие успешно отклонено");
-        return null;
+    public CommentDto rejectComment(@PathVariable(name = "commentId") Integer commentId,
+                                    @RequestParam(defaultValue = "Без указания причины") String reason) {
+        log.info("Получен администраторский запрос на отклонение комментария с id= {}. Причина отклонения: {}",
+                commentId, reason);
+        return CommentMapper.toCommentDto(adminCommentService.rejectComment(commentId,reason));
     }
 
-    @PatchMapping
-    public CategoryDto updateCategory(@Valid @RequestBody CategoryDto categoryDto) {
-        log.info("Получен администраторский запрос на изменение категории с id = {}", categoryDto.getId());
-        Category category = CategoryMapper.toCategory(categoryDto);
-        return CategoryMapper.toCategoryDto(categoryService.updateCategory(category));
+    @PutMapping("/{commentId}")
+    public CommentDto updateComment(@PathVariable(name = "commentId") Integer commentId,
+                                    @RequestBody NewOrUpdateCommentDto newOrUpdateCommentDto) {
+        log.info("Получен администраторский запрос на изменение комментария с id = {}.", commentId);
     }
 
-    @DeleteMapping("/{catId}")
-    public void deleteCategory(@PathVariable(name = "catId") Integer categoryId) {
-        log.info("Получен администраторский запрос на удаление категории с id = {}", categoryId);
-        categoryService.deleteCategoryById(categoryId);
+    @GetMapping
+    public List<CommentDto> getComments(@RequestParam(required = false) List<Integer> users,
+                                        @RequestParam(required = false) List<String> states,
+                                        @RequestParam(required = false) List<Integer> events,
+                                        @RequestParam(required = false) String rangeStart,
+                                        @RequestParam(required = false) String rangeEnd,
+                                        @PositiveOrZero @RequestParam(defaultValue = "0") int from,
+                                        @Positive @RequestParam(defaultValue = "10") int size) {
+        log.info("Получен администраторский запрос на поиск комментариев со следующими параметрами:" +
+                        " users: {}, states: {}, events: {}, rangeStart: {}, rangeEnd: {}, from: {}, size: {}",
+                users, states, events, rangeStart, rangeEnd, from, size);
+        List<Comment> comments = adminCommentService.getCommentsWithConditions(users, states, events,
+                rangeStart, rangeEnd, from / size, size);
+        log.info("Запрос успешно обработан");
+        return comments.stream().map(CommentMapper::toCommentDto).collect(Collectors.toList());
     }
 }

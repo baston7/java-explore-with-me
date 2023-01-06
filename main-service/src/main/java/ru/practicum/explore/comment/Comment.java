@@ -42,4 +42,7 @@ public class Comment {
     LocalDateTime created;
     @Enumerated(EnumType.STRING)
     CommentState state;
+    LocalDateTime published;
+    @Column(name = "reject_reason")
+    String rejectReason;
 }

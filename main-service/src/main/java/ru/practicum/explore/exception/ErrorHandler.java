@@ -67,7 +67,19 @@ public class ErrorHandler {
                 .status(HttpStatus.NOT_FOUND)
                 .timestamp(LocalDateTime.now().toString())
                 .build();
+    }
 
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiError handleCommentNotFoundException(final CommentNotFoundException exception, WebRequest request) {
+        log.error("Ошибка в поиске пользователя. Пользователь не найден");
+        return ApiError.builder()
+                .errors(List.of(exception.getClass().getName()))
+                .message(exception.getLocalizedMessage())
+                .reason("Пользователи не найдены " + request.getDescription(false))
+                .status(HttpStatus.NOT_FOUND)
+                .timestamp(LocalDateTime.now().toString())
+                .build();
     }
 
     @ExceptionHandler
@@ -81,7 +93,6 @@ public class ErrorHandler {
                 .status(HttpStatus.NOT_FOUND)
                 .timestamp(LocalDateTime.now().toString())
                 .build();
-
     }
 
     @ExceptionHandler
@@ -96,7 +107,6 @@ public class ErrorHandler {
                 .status(HttpStatus.NOT_FOUND)
                 .timestamp(LocalDateTime.now().toString())
                 .build();
-
     }
 
     @ExceptionHandler
@@ -110,7 +120,6 @@ public class ErrorHandler {
                 .status(HttpStatus.NOT_FOUND)
                 .timestamp(LocalDateTime.now().toString())
                 .build();
-
     }
 
     @ExceptionHandler
@@ -179,5 +188,4 @@ public class ErrorHandler {
                 .timestamp(LocalDateTime.now().toString())
                 .build();
     }
-
 }
