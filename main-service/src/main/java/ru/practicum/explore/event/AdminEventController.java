@@ -34,7 +34,7 @@ public class AdminEventController {
     public EventFullDto publishEvent(@PathVariable(name = "eventId") Integer eventId) {
         log.info("Получен администраторский запрос на публикацию события с id= {} ", eventId);
         Event event = adminEventService.publishEventById(eventId);
-        log.info("Событие успешно опубликовано");
+        log.info("Событие успешно опубликовано ");
         return EventMapper.toEventFullDto(event);
     }
 
