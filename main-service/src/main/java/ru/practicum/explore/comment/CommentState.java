@@ -5,5 +5,5 @@ public enum CommentState {
     PUBLISHED,
     PUBLISHED_WITH_EDITS_ADMIN,
     CANCELED,
-    REJECTED,
+    REJECTED
 }

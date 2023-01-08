@@ -47,9 +47,9 @@ public class AdminCommentController {
     public CommentDto updateComment(@PathVariable(name = "commentId") Integer commentId,
                                     @Valid @RequestBody NewOrUpdateCommentDto newOrUpdateCommentDto) {
         log.info("Получен администраторский запрос на изменение комментария с id = {}.", commentId);
-        Comment updatingComment=adminCommentService.getCommentById(commentId);
-        String text= newOrUpdateCommentDto.getText();
-        return CommentMapper.toCommentDto(adminCommentService.updateComment(updatingComment,text));
+        Comment updatingComment = adminCommentService.getCommentById(commentId);
+        String text = newOrUpdateCommentDto.getText();
+        return CommentMapper.toCommentDto(adminCommentService.updateComment(updatingComment, text));
     }
 
     @GetMapping
