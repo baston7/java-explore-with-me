@@ -2,6 +2,7 @@ package ru.practicum.explore.comment;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,7 +11,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import ru.practicum.explore.comment.dto.CommentDto;
+import ru.practicum.explore.comment.dto.NewOrUpdateCommentDto;
+import ru.practicum.explore.comment.model.Comment;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
@@ -20,7 +25,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping(path = "/admin/comments")
 @RequiredArgsConstructor
-
+@Validated
 public class AdminCommentController {
     private final AdminCommentService adminCommentService;
 
@@ -35,13 +40,16 @@ public class AdminCommentController {
                                     @RequestParam(defaultValue = "Без указания причины") String reason) {
         log.info("Получен администраторский запрос на отклонение комментария с id= {}. Причина отклонения: {}",
                 commentId, reason);
-        return CommentMapper.toCommentDto(adminCommentService.rejectComment(commentId,reason));
+        return CommentMapper.toCommentDto(adminCommentService.rejectComment(commentId, reason));
     }
 
     @PutMapping("/{commentId}")
     public CommentDto updateComment(@PathVariable(name = "commentId") Integer commentId,
-                                    @RequestBody NewOrUpdateCommentDto newOrUpdateCommentDto) {
+                                    @Valid @RequestBody NewOrUpdateCommentDto newOrUpdateCommentDto) {
         log.info("Получен администраторский запрос на изменение комментария с id = {}.", commentId);
+        Comment updatingComment=adminCommentService.getCommentById(commentId);
+        String text= newOrUpdateCommentDto.getText();
+        return CommentMapper.toCommentDto(adminCommentService.updateComment(updatingComment,text));
     }
 
     @GetMapping

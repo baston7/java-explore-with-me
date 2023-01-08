@@ -72,11 +72,11 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ApiError handleCommentNotFoundException(final CommentNotFoundException exception, WebRequest request) {
-        log.error("Ошибка в поиске пользователя. Пользователь не найден");
+        log.error("Ошибка в поиске комментария. Коментарий не найден");
         return ApiError.builder()
                 .errors(List.of(exception.getClass().getName()))
                 .message(exception.getLocalizedMessage())
-                .reason("Пользователи не найдены " + request.getDescription(false))
+                .reason("Комментарии не найдены " + request.getDescription(false))
                 .status(HttpStatus.NOT_FOUND)
                 .timestamp(LocalDateTime.now().toString())
                 .build();
@@ -142,7 +142,7 @@ public class ErrorHandler {
         return ApiError.builder()
                 .errors(List.of(exception.getClass().getName()))
                 .message(exception.getLocalizedMessage())
-                .reason("Категория не найдена " + request.getDescription(false))
+                .reason("Ошибка по адресу- " + request.getDescription(false))
                 .status(HttpStatus.FORBIDDEN)
                 .timestamp(LocalDateTime.now().toString())
                 .build();

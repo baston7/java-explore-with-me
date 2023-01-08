@@ -1,11 +1,11 @@
-package ru.practicum.explore.comment;
+package ru.practicum.explore.comment.model;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import ru.practicum.explore.event.State;
+import ru.practicum.explore.comment.CommentState;
 import ru.practicum.explore.event.model.Event;
 import ru.practicum.explore.user.model.User;
 
@@ -41,6 +41,7 @@ public class Comment {
     Event event;
     LocalDateTime created;
     @Enumerated(EnumType.STRING)
+    @Column(name = "status")
     CommentState state;
     LocalDateTime published;
     @Column(name = "reject_reason")

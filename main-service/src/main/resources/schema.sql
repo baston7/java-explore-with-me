@@ -60,6 +60,6 @@ CREATE TABLE IF NOT EXISTS comments
     author_id     INT REFERENCES users (id),
     status        VARCHAR                     NOT NULL,
     created       TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    published     TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    reject_reason VARCHAR                     NOT NULL,
+    published     TIMESTAMP WITHOUT TIME ZONE,
+    reject_reason VARCHAR
 );

@@ -1,4 +1,4 @@
-package ru.practicum.explore.comment;
+package ru.practicum.explore.comment.dto;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+import ru.practicum.explore.comment.CommentState;
 
 @Getter
 @Setter

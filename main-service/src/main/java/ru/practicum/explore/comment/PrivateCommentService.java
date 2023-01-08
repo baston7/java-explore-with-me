@@ -4,10 +4,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import ru.practicum.explore.comment.model.Comment;
+import ru.practicum.explore.event.State;
 import ru.practicum.explore.exception.CommentNotFoundException;
 import ru.practicum.explore.exception.ForbiddenException;
 import ru.practicum.explore.user.model.User;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -17,6 +21,9 @@ public class PrivateCommentService {
     private final CommentRepository commentRepository;
 
     public Comment addComment(Comment comment) {
+        if (!comment.getEvent().getState().equals(State.PUBLISHED)) {
+            throw new ForbiddenException("Нельзя добавлять комментарий на неопубликованное событие");
+        }
         Comment newComment = commentRepository.save(comment);
         log.info("Коментарий с id={} добавлен", newComment.getId());
         return newComment;
@@ -53,14 +60,41 @@ public class PrivateCommentService {
     }
 
     public List<Comment> getUserComments(Integer userID, int page, int size) {
-        List<Comment> comments = commentRepository.findAllByAuthorId(userID, PageRequest.of(page,size));
+        List<Comment> comments = commentRepository.findAllByAuthorId(userID, PageRequest.of(page, size));
         if (comments.isEmpty()) {
             throw new CommentNotFoundException("Не найдено комментариев у пользователя");
         }
         return comments;
     }
-    public Comment getCommentByIdAndUserId(Integer commentId,Integer userId) {
-        return commentRepository.findByIdAndAuthorId(commentId,userId)
+
+    public Comment getCommentByIdAndUserId(Integer commentId, Integer userId) {
+        return commentRepository.findByIdAndAuthorId(commentId, userId)
+                .orElseThrow(() -> new CommentNotFoundException("Комментарий не найден у пользователя"));
+    }
+
+    public List<Comment> getCommentsByEventIdWithsParams(Integer eventId, String rangeStartPublish,
+                                                         String rangeEndPublish, int page, int size) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime start = LocalDateTime.now().minusYears(300);
+        LocalDateTime end = LocalDateTime.now().plusYears(300);
+        if (rangeStartPublish != null) {
+            start = LocalDateTime.parse(rangeStartPublish, formatter);
+        }
+        if (rangeEndPublish != null) {
+            end = LocalDateTime.parse(rangeEndPublish, formatter);
+        }
+        List<Comment> comments = commentRepository.getCommentsByEventIdWithsParams(eventId,
+                List.of(CommentState.PUBLISHED_WITH_EDITS_ADMIN, CommentState.PUBLISHED),
+                start, end, PageRequest.of(page, size));
+        if (comments.isEmpty()) {
+            throw new CommentNotFoundException("Не найдено комментариев с указанными условиями");
+        }
+        return comments;
+    }
+
+    public Comment getPublishCommentById(Integer commentId, Integer eventId) {
+        return commentRepository.findByIdAndEventIdAndStateIn(commentId, eventId,
+                        List.of(CommentState.PUBLISHED_WITH_EDITS_ADMIN, CommentState.PUBLISHED))
                 .orElseThrow(() -> new CommentNotFoundException("Комментарий не найден"));
     }
 
