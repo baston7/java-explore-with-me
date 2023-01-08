@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
-@RequestMapping(path = "events/{id}/comments")
+@RequestMapping(path = "/events/{id}/comments")
 @RequiredArgsConstructor
 @Validated
 public class PublicCommentController {

@@ -27,6 +27,7 @@ public class AdminCommentService {
             throw new ForbiddenException("Нельзя опубликовать отмененный/опубликованный/отклоненный комментарий");
         }
         comment.setPublished(LocalDateTime.now());
+        comment.setRejectReason(null);
         comment.setState(CommentState.PUBLISHED);
         log.info("Коментарий с id={} опубликован", comment.getId());
         return commentRepository.save(comment);
@@ -51,6 +52,7 @@ public class AdminCommentService {
             throw new ForbiddenException("Нельзя изменить отмененный/опубликованный/отклоненный комментарий");
         }
         updatingComment.setText(text);
+        updatingComment.setRejectReason(null);
         updatingComment.setPublished(LocalDateTime.now());
         updatingComment.setState(CommentState.PUBLISHED_WITH_EDITS_ADMIN);
         log.info("Коментарий с id={} измененен и отправлен на модерацию ", updatingComment.getId());
