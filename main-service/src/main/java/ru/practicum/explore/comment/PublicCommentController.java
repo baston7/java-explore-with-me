@@ -34,8 +34,8 @@ public class PublicCommentController {
         log.info("Получен публичный запрос на просмотр всех комментариев, где eventId= {}", eventId);
         List<Comment> comments = privateCommentService.getCommentsByEventIdWithsParams(eventId, rangeStartPublish,
                 rangeEndPublish, from / size, size);
-        return comments.stream().
-                map(CommentMapper::toCommentShortDto)
+        return comments.stream()
+                .map(CommentMapper::toCommentShortDto)
                 .collect(Collectors.toList());
     }
 

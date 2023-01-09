@@ -76,8 +76,8 @@ public class AdminCommentService {
             isEvents = true;
         }
         if (states != null) {
-            valueStates = states.stream().
-                    map(CommentState::valueOf)
+            valueStates = states.stream()
+                    .map(CommentState::valueOf)
                     .collect(Collectors.toList());
         }
         if (rangeStart != null) {
