@@ -18,12 +18,18 @@ public interface CommentRepository extends JpaRepository<Comment, Integer> {
 
     Optional<Comment> findByIdAndEventIdAndStateIn(Integer commentId, Integer eventId, List<CommentState> states);
 
-    @Query("select c from Comment c Where ((?2=false or (c.author.id in ?1)) and (?4=false or (c.event.id in ?3)) and (c.state in ?5) and (c.created between ?6 and ?7))")
+    @Query("select c" +
+            " from Comment c" +
+            " Where ((?2=false or (c.author.id in ?1)) and (?4=false or (c.event.id in ?3)) and (c.state in ?5)" +
+            " and (c.created between ?6 and ?7))")
     List<Comment> findCommentsWithConditions(List<Integer> usersId, boolean isUsers,
                                              List<Integer> eventsId, boolean isEvents,
                                              List<CommentState> states, LocalDateTime start,
                                              LocalDateTime end, PageRequest pageRequest);
 
-    @Query("select c from Comment c where (c.event.id=?1 and c.state in ?2 and c.published between ?3 and ?4) order by c.created desc ")
-    List<Comment> getCommentsByEventIdWithsParams(Integer eventId, List<CommentState> states, LocalDateTime start, LocalDateTime end, PageRequest pageRequest);
+    @Query("select c" +
+            " from Comment c" +
+            " where (c.event.id=?1 and c.state in ?2 and c.published between ?3 and ?4) order by c.created desc ")
+    List<Comment> getCommentsByEventIdWithsParams(Integer eventId, List<CommentState> states, LocalDateTime start,
+                                                  LocalDateTime end, PageRequest pageRequest);
 }

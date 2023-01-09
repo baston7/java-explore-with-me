@@ -76,7 +76,9 @@ public class AdminCommentService {
             isEvents = true;
         }
         if (states != null) {
-            valueStates = states.stream().map(CommentState::valueOf).collect(Collectors.toList());
+            valueStates = states.stream().
+                    map(CommentState::valueOf)
+                    .collect(Collectors.toList());
         }
         if (rangeStart != null) {
             start = LocalDateTime.parse(rangeStart, formatter);
@@ -84,8 +86,8 @@ public class AdminCommentService {
         if (rangeEnd != null) {
             end = LocalDateTime.parse(rangeEnd, formatter);
         }
-        List<Comment> comments = commentRepository.findCommentsWithConditions(users, isUsers, events, isEvents, valueStates,
-                start, end, PageRequest.of(page, size));
+        List<Comment> comments = commentRepository.findCommentsWithConditions(users, isUsers, events, isEvents,
+                valueStates, start, end, PageRequest.of(page, size));
         if (comments.isEmpty()) {
             throw new CommentNotFoundException("Не найдены комментарии с указанными параметрами");
         }

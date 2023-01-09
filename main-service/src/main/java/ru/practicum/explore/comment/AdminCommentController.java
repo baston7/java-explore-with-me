@@ -66,6 +66,8 @@ public class AdminCommentController {
         List<Comment> comments = adminCommentService.getCommentsWithConditions(users, states, events,
                 rangeStart, rangeEnd, from / size, size);
         log.info("Запрос успешно обработан");
-        return comments.stream().map(CommentMapper::toCommentDto).collect(Collectors.toList());
+        return comments.stream()
+                .map(CommentMapper::toCommentDto)
+                .collect(Collectors.toList());
     }
 }
