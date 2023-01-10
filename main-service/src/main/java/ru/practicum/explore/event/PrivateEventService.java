@@ -37,7 +37,7 @@ public class PrivateEventService {
     public Event updateEvent(Event newEvent) {
         Event updatingEvent = eventRepository.findById(newEvent.getId())
                 .orElseThrow(() -> new EventNotFoundException("Не найдено событие на обновление"));
-        if (newEvent.getInitiator().getId() != updatingEvent.getInitiator().getId()) {
+        if (!newEvent.getInitiator().getId().equals(updatingEvent.getInitiator().getId())) {
             throw new ForbiddenException("Только создатель может обновлять мероприятие");
         }
         if (updatingEvent.getState() == State.PUBLISHED) {

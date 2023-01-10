@@ -34,7 +34,7 @@ public class PrivateCommentService {
         if (state.equals(CommentState.PUBLISHED) || state.equals(CommentState.PUBLISHED_WITH_EDITS_ADMIN)) {
             throw new ForbiddenException("Нельзя изменить уже опубликованный комментарий");
         }
-        if (user.getId() != updatingComment.getAuthor().getId()) {
+        if (!user.getId().equals(updatingComment.getAuthor().getId())) {
             throw new ForbiddenException("Нельзя изменить не свой комментарий");
         }
         updatingComment.setText(text);
@@ -51,7 +51,7 @@ public class PrivateCommentService {
         if (state.equals(CommentState.CANCELED)) {
             throw new ForbiddenException("Нельзя отменить уже отмененный комментарий");
         }
-        if (user.getId() != cancelComment.getAuthor().getId()) {
+        if (!user.getId().equals(cancelComment.getAuthor().getId())) {
             throw new ForbiddenException("Нельзя отменить не свой комментарий");
         }
         cancelComment.setState(CommentState.CANCELED);
