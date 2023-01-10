@@ -15,7 +15,7 @@ import ru.practicum.explore.user.dto.UserShortDto;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CommentShortDto {
-    int id;
+    Integer id;
     String text;
     UserShortDto author;
     EventShortDto event;

@@ -22,9 +22,11 @@ import javax.persistence.Table;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int id;
+    Integer id;
+
     @Column(unique = true)
     String name;
+
     @Column(unique = true)
     String email;
 }

@@ -29,7 +29,7 @@ public class PrivateRequestService {
             throw new ForbiddenException("Нельзя  учавствовать в неопубликованном событии");
         }
         if (!requestRepository
-                .findAllByRequesterIdAndEvent_IdOrEvent_Initiator_IdAndEvent_Id(request.getRequester().getId(),
+                .findAllByRequesterIdAndEventIdOrEventInitiatorIdAndEventId(request.getRequester().getId(),
                         event.getId(), request.getRequester().getId(), event.getId()).isEmpty()) {
             throw new ValidationException("Нельзя создать повторный запрос или учавствовать в своем событии");
         }

@@ -12,6 +12,6 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserShortDto {
-    int id;
+    Integer id;
     String name;
 }

@@ -17,7 +17,7 @@ import javax.validation.constraints.NotNull;
 @NotNull
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CategoryDto {
-    int id;
+    Integer id;
     @NotBlank(message = "Имя категории не может быть пустым ")
     String name;
 }

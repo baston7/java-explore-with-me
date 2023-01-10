@@ -14,7 +14,7 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserDto {
-    int id;
+    Integer id;
     @NotBlank(message = "Имя пользоваетля не может быть пустым")
     String name;
     @Email(message = "email не соответствует формату")

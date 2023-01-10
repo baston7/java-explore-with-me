@@ -14,10 +14,10 @@ import ru.practicum.explore.comment.CommentState;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CommentDto {
-    int id;
+    Integer id;
     String text;
-    int authorId;
-    int eventId;
+    Integer authorId;
+    Integer eventId;
     CommentState state;
     String published;
     String created;

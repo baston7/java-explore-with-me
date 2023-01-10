@@ -17,7 +17,7 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CompilationDto {
     List<EventShortDto> events;
-    int id;
+    Integer id;
     boolean pinned;
     String title;
 }

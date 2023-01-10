@@ -30,20 +30,27 @@ import java.time.LocalDateTime;
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int id;
+    Integer id;
+
     @Column(name = "comment_text")
     String text;
+
     @ManyToOne
     @JoinColumn(name = "author_id")
     User author;
+
     @ManyToOne
     @JoinColumn(name = "event_id")
     Event event;
+
     LocalDateTime created;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     CommentState state;
+
     LocalDateTime published;
+
     @Column(name = "reject_reason")
     String rejectReason;
 }
