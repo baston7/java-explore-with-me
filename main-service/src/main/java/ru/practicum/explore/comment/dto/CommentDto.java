@@ -1,4 +1,4 @@
-package ru.practicum.explore.category.dto;
+package ru.practicum.explore.comment.dto;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -6,18 +6,20 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import ru.practicum.explore.comment.CommentState;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@NotNull
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CategoryDto {
+public class CommentDto {
     Integer id;
-    @NotBlank(message = "Имя категории не может быть пустым ")
-    String name;
+    String text;
+    Integer authorId;
+    Integer eventId;
+    CommentState state;
+    String published;
+    String created;
+    String rejectReason;
 }

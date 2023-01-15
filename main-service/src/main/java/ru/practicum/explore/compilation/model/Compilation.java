@@ -26,7 +26,8 @@ import java.util.List;
 public class Compilation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int id;
+    Integer id;
+
     @ManyToMany
     @JoinTable(
             name = "compilations_events",
@@ -34,6 +35,8 @@ public class Compilation {
             inverseJoinColumns = @JoinColumn(name = "event_id")
     )
     List<Event> events;
+
     boolean pinned;
+
     String title;
 }

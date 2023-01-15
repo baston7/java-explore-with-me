@@ -1,14 +1,15 @@
-package ru.practicum.explore.request.model;
+package ru.practicum.explore.comment.model;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import ru.practicum.explore.comment.CommentState;
 import ru.practicum.explore.event.model.Event;
-import ru.practicum.explore.event.State;
 import ru.practicum.explore.user.model.User;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -24,23 +25,32 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "requests", schema = "public")
+@Table(name = "comments", schema = "public")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Request {
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
 
-    LocalDateTime created;
+    @Column(name = "comment_text")
+    String text;
+
+    @ManyToOne
+    @JoinColumn(name = "author_id")
+    User author;
 
     @ManyToOne
     @JoinColumn(name = "event_id")
     Event event;
 
-    @ManyToOne
-    @JoinColumn(name = "requester_id")
-    User requester;
+    LocalDateTime created;
 
     @Enumerated(EnumType.STRING)
-    State status;
+    @Column(name = "status")
+    CommentState state;
+
+    LocalDateTime published;
+
+    @Column(name = "reject_reason")
+    String rejectReason;
 }

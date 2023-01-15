@@ -1,4 +1,4 @@
-package ru.practicum.explore.compilation.dto;
+package ru.practicum.explore.comment.dto;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -7,17 +7,19 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import ru.practicum.explore.event.dto.EventShortDto;
-
-import java.util.List;
+import ru.practicum.explore.user.dto.UserShortDto;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CompilationDto {
-    List<EventShortDto> events;
+public class CommentShortDto {
     Integer id;
-    boolean pinned;
-    String title;
+    String text;
+    UserShortDto author;
+    EventShortDto event;
+    String state;
+    String created;
+    String published;
 }
